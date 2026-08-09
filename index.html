@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Travel Tribe | Find Your Tribe</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        navy: '#1B2A4A',
+                        terracotta: '#D9663D',
+                        gold: '#E8A33D',
+                        offwhite: '#F9F8F6'
+                    },
+                    fontFamily: {
+                        serif: ['Playfair Display', 'serif'],
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Custom styles for animations and specific tweaks */
+        .hero-bg {
+            background-image: linear-gradient(to right, rgba(27, 42, 74, 0.9), rgba(27, 42, 74, 0.4)), url('PHOTO-2026-08-09-14-21-11.jpg');
+            background-size: cover;
+            background-position: center;
+        }
+        html { scroll-behavior: smooth; }
+        .logo-mask {
+            border-radius: 12px; /* Soften the square edges of the provided logo */
+        }
+    </style>
+</head>
+<body class="font-sans bg-offwhite text-gray-800 antialiased">
+
+    <!-- Navbar -->
+    <nav class="bg-white shadow-sm fixed w-full z-50 top-0">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-20">
+                <div class="flex items-center">
+                    <!-- Updated Logo -->
+                    <img src="PHOTO-2026-08-09-14-21-12 3.jpg" alt="The Travel Tribe Logo" class="h-12 w-12 object-cover logo-mask shadow-sm">
+                    <span class="ml-3 font-serif font-bold text-2xl text-navy">The Travel Tribe</span>
+                </div>
+                <div class="flex items-center">
+                    <a href="#match-tool" class="bg-terracotta hover:bg-orange-700 text-white px-6 py-2 rounded-full font-medium transition duration-300">Find My Tribe</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-bg h-screen min-h-[600px] flex items-center mt-10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 w-full">
+            <div class="max-w-2xl text-white">
+                <!-- Using Logo in Hero for extra branding -->
+                <img src="PHOTO-2026-08-09-14-21-12 3.jpg" alt="Travel Tribe Icon" class="h-16 w-16 mb-6 logo-mask shadow-lg border-2 border-white/20">
+                <h1 class="text-5xl md:text-6xl font-serif font-bold leading-tight mb-4">Travel Your Way.<br><span class="text-gold">Find Your Tribe.</span></h1>
+                <p class="text-xl mb-8 opacity-90">AI-assisted interest matching to group young travellers into Tribes of ~20 for authentic, backpacker-style trips led by a trained human coordinator.</p>
+                <a href="#match-tool" class="bg-gold hover:bg-yellow-500 text-navy font-bold px-8 py-4 rounded-full text-lg transition duration-300 inline-flex items-center">
+                    Find My Tribe <i class="fas fa-arrow-right ml-2"></i>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Problem Strip -->
+    <section class="bg-navy text-white py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid md:grid-cols-2 gap-8 items-center text-center md:text-left">
+                <div>
+                    <h3 class="text-2xl font-serif text-gold mb-2">Tired of generic, one-size-fits-all packages?</h3>
+                    <p class="text-lg opacity-80">So were we. The standard itinerary doesn't cut it anymore.</p>
+                </div>
+                <div class="md:border-l border-white/20 md:pl-8">
+                    <p class="text-lg leading-relaxed">We offer real connections, curated local experiences, and genuine freedom. Travel with people who share your vibe.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works -->
+    <section class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h2 class="text-3xl md:text-4xl font-serif text-center text-navy mb-16">How It Works</h2>
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-10 text-center">
+                <!-- Step 1 -->
+                <div class="relative">
+                    <div class="w-20 h-20 mx-auto bg-offwhite rounded-full flex items-center justify-center border-2 border-terracotta mb-4 shadow-sm">
+                        <i class="fas fa-clipboard-list text-3xl text-terracotta"></i>
+                    </div>
+                    <h4 class="text-xl font-bold text-navy mb-2">1. Interest Form</h4>
+                    <p class="text-gray-600">Tell us your vibe, budget, and travel style.</p>
+                    <div class="hidden md:block absolute top-10 right-0 w-full h-[2px] bg-gray-200 -z-10 transform translate-x-1/2"></div>
+                </div>
+                <!-- Step 2 -->
+                <div class="relative">
+                    <div class="w-20 h-20 mx-auto bg-offwhite rounded-full flex items-center justify-center border-2 border-gold mb-4 shadow-sm">
+                        <i class="fas fa-brain text-3xl text-gold"></i>
+                    </div>
+                    <h4 class="text-xl font-bold text-navy mb-2">2. AI Matching</h4>
+                    <p class="text-gray-600">Our engine finds your perfect travel companions.</p>
+                    <div class="hidden md:block absolute top-10 right-0 w-full h-[2px] bg-gray-200 -z-10 transform translate-x-1/2"></div>
+                </div>
+                <!-- Step 3 -->
+                <div class="relative">
+                    <div class="w-20 h-20 mx-auto bg-offwhite rounded-full flex items-center justify-center border-2 border-terracotta mb-4 shadow-sm">
+                        <i class="fas fa-users text-3xl text-terracotta"></i>
+                    </div>
+                    <h4 class="text-xl font-bold text-navy mb-2">3. Tribe of ~20</h4>
+                    <p class="text-gray-600">Join a small, intimate group of like-minded youths.</p>
+                    <div class="hidden md:block absolute top-10 right-0 w-full h-[2px] bg-gray-200 -z-10 transform translate-x-1/2"></div>
+                </div>
+                <!-- Step 4 -->
+                <div>
+                    <div class="w-20 h-20 mx-auto bg-offwhite rounded-full flex items-center justify-center border-2 border-navy mb-4 shadow-sm">
+                        <!-- Used Logo in Flow to cement branding -->
+                        <img src="PHOTO-2026-08-09-14-21-12 3.jpg" class="w-10 h-10 logo-mask">
+                    </div>
+                    <h4 class="text-xl font-bold text-navy mb-2">4. Coordinator-led</h4>
+                    <p class="text-gray-600">Trained experts ensure authentic, safe adventures.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Interest Match Tool (CENTERPIECE) -->
+    <section id="match-tool" class="py-24 bg-offwhite">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <h2 class="text-4xl font-serif text-navy mb-4">Find Your Tribe</h2>
+                <p class="text-lg text-gray-600">Take the short quiz below. Let AI match you with the perfect upcoming trip or a highly compatible waitlist.</p>
+            </div>
+
+            <div class="bg-white rounded-2xl shadow-xl p-8 md:p-12 border-t-8 border-terracotta relative overflow-hidden">
+                <!-- Faint background logo mark in the form -->
+                <div class="absolute -right-20 -bottom-20 opacity-5 pointer-events-none">
+                    <img src="PHOTO-2026-08-09-14-21-12 3.jpg" class="w-96 h-96 logo-mask">
+                </div>
+
+                <!-- State 1: The Form -->
+                <div id="quiz-state" class="relative z-10">
+                    <form id="match-form" class="space-y-6">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Destination Vibe</label>
+                                <select id="dest" class="w-full border-gray-300 rounded-lg shadow-sm focus:border-terracotta focus:ring focus:ring-terracotta focus:ring-opacity-50 p-3 border bg-white">
+                                    <option value="mountains">Mountains & Trekking (e.g., Himachal)</option>
+                                    <option value="snow">Snow Expeditions (e.g., Spiti)</option>
+                                    <option value="culture">Culture & History (e.g., Rajasthan)</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Travel Style</label>
+                                <div class="flex gap-2 flex-wrap">
+                                    <label class="px-4 py-2 border rounded-full cursor-pointer hover:bg-gray-50 peer-checked:bg-terracotta bg-white"><input type="radio" name="style" value="adventure" checked class="mr-2">Adventure</label>
+                                    <label class="px-4 py-2 border rounded-full cursor-pointer hover:bg-gray-50 bg-white"><input type="radio" name="style" value="culture" class="mr-2">Culture</label>
+                                    <label class="px-4 py-2 border rounded-full cursor-pointer hover:bg-gray-50 bg-white"><input type="radio" name="style" value="food" class="mr-2">Food</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Budget Range (₹)</label>
+                                <select class="w-full border-gray-300 rounded-lg shadow-sm p-3 border bg-white">
+                                    <option>₹10,000 - ₹15,000</option>
+                                    <option>₹15,000 - ₹25,000</option>
+                                    <option>₹25,000+</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Preferred Month</label>
+                                <input type="month" class="w-full border-gray-300 rounded-lg shadow-sm p-3 border bg-white">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Pace</label>
+                            <input type="range" min="1" max="3" value="2" class="w-full accent-terracotta">
+                            <div class="flex justify-between text-xs text-gray-500 mt-1">
+                                <span>Chill</span>
+                                <span>Moderate</span>
+                                <span>Fast-paced</span>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="w-full bg-navy hover:bg-blue-900 text-white font-bold py-4 rounded-xl text-lg transition duration-300 shadow-lg mt-8 flex items-center justify-center">
+                            Let AI Find My Tribe <img src="PHOTO-2026-08-09-14-21-12 3.jpg" class="w-6 h-6 ml-3 logo-mask">
+                        </button>
+                    </form>
+                </div>
+
+                <!-- State 2: Loading (using logo animation) -->
+                <div id="loading-state" class="hidden py-16 text-center relative z-10">
+                    <img src="PHOTO-2026-08-09-14-21-12 3.jpg" class="w-20 h-20 logo-mask mx-auto mb-6 animate-pulse shadow-xl">
+                    <h3 class="text-2xl font-serif text-navy">Analyzing your vibe...</h3>
+                    <p class="text-gray-500 mt-2">Matching with upcoming Tribes and fellow travellers.</p>
+                </div>
+
+                <!-- State 3a: Match Found -->
+                <div id="match-found-state" class="hidden relative z-10">
+                    <div class="text-center mb-8">
+                        <span class="inline-block bg-green-100 text-green-800 px-4 py-1 rounded-full text-sm font-bold mb-2">IT'S A MATCH!</span>
+                        <h3 class="text-3xl font-serif text-navy">We found your Tribe!</h3>
+                        <p class="text-gray-600">Your profile has a <strong class="text-terracotta">92% match</strong> with this upcoming trip.</p>
+                    </div>
+
+                    <div class="border rounded-xl overflow-hidden flex flex-col md:flex-row shadow-sm bg-white">
+                        <div class="md:w-2/5 h-48 md:h-auto">
+                            <!-- Updated Image for matched result -->
+                            <img src="PHOTO-2026-08-09-14-21-11.jpg" alt="Himachal Adventure" class="w-full h-full object-cover">
+                        </div>
+                        <div class="p-6 md:w-3/5 bg-gray-50 flex flex-col justify-center">
+                            <h4 class="text-2xl font-bold text-navy mb-2">Himachal Backpacker Adventure</h4>
+                            <p class="text-sm text-gray-500 mb-4"><i class="far fa-calendar-alt mr-2"></i> Aug 15 - Aug 22 | <i class="fas fa-fire mr-2"></i> 4 spots left</p>
+                            
+                            <div class="bg-white p-4 rounded-lg border border-gold/30 mb-4 shadow-sm">
+                                <p class="text-xs text-gray-500 uppercase tracking-wide font-bold mb-1">Your Personalized Tribe Price</p>
+                                <div class="flex items-end gap-3">
+                                    <span class="text-3xl font-bold text-terracotta">₹12,000</span>
+                                    <span class="text-lg text-gray-400 line-through mb-1">₹15,000</span>
+                                </div>
+                                <p class="text-sm text-green-600 font-medium mt-1">You save 20% by matching!</p>
+                            </div>
+
+                            <button class="w-full bg-terracotta hover:bg-orange-700 text-white font-bold py-3 rounded-lg transition duration-300">
+                                Join This Tribe
+                            </button>
+                        </div>
+                    </div>
+                    <div class="text-center mt-6">
+                        <button onclick="resetMatch()" class="text-sm text-gray-500 hover:text-navy underline">Retake Quiz</button>
+                    </div>
+                </div>
+
+                <!-- State 3b: No Match (Waitlist) -->
+                <div id="no-match-state" class="hidden relative z-10">
+                    <div class="text-center mb-8">
+                        <div class="w-16 h-16 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl">
+                            <i class="fas fa-hourglass-half"></i>
+                        </div>
+                        <h3 class="text-3xl font-serif text-navy mb-2">You're a trailblazer!</h3>
+                        <p class="text-gray-600 max-w-lg mx-auto">Your vibe is unique. There's no perfect active Tribe for your specific dates right now, but you're not alone.</p>
+                    </div>
+
+                    <div class="bg-blue-50 border border-blue-100 rounded-xl p-6 md:p-8 max-w-xl mx-auto text-center">
+                        <h4 class="font-bold text-navy mb-2">We've started a new Tribe just for you.</h4>
+                        <p class="text-sm text-gray-600 mb-6">As soon as 4-5 more compatible travellers join this waitlist, we'll assign a Coordinator and launch the trip. <br><br><strong>Estimated wait: ~1 month.</strong></p>
+                        
+                        <form onsubmit="event.preventDefault(); alert('Joined Waitlist!'); resetMatch();" class="space-y-4">
+                            <input type="email" placeholder="Your Email Address" required class="w-full p-3 border border-gray-300 rounded-lg">
+                            <div class="flex gap-2">
+                                <span class="inline-flex items-center px-4 rounded-l-lg border border-r-0 border-gray-300 bg-gray-50 text-gray-500 sm:text-sm">
+                                    +91
+                                </span>
+                                <input type="tel" placeholder="WhatsApp Number" required class="flex-1 p-3 border border-gray-300 rounded-r-lg">
+                            </div>
+                            <button type="submit" class="w-full bg-navy text-white font-bold py-3 rounded-lg hover:bg-blue-900 transition flex items-center justify-center">
+                                Notify Me When My Tribe Forms <img src="PHOTO-2026-08-09-14-21-12 3.jpg" class="w-5 h-5 ml-2 logo-mask">
+                            </button>
+                        </form>
+                    </div>
+                    <div class="text-center mt-6">
+                        <button onclick="resetMatch()" class="text-sm text-gray-500 hover:text-navy underline">Retake Quiz</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Upcoming Tribes (Sample Cards) -->
+    <section class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h2 class="text-3xl md:text-4xl font-serif text-navy mb-12 text-center">Upcoming Tribes</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Card 1 -->
+                <div class="border rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition duration-300 group">
+                    <div class="h-48 overflow-hidden relative">
+                        <img src="khaliya top.jpeg" alt="Khaliya Top" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                        <span class="absolute top-4 right-4 bg-white/90 px-3 py-1 text-xs font-bold rounded-full text-terracotta shadow">3 Spots Left</span>
+                    </div>
+                    <div class="p-6">
+                        <h4 class="text-xl font-bold text-navy mb-2">Khaliya Top Summit Tribe</h4>
+                        <p class="text-gray-500 text-sm mb-4">Dates: Sept 10 - 15, 2026</p>
+                        <div class="flex gap-2 mb-6">
+                            <span class="bg-gray-100 text-gray-600 px-2 py-1 text-xs rounded">Trek</span>
+                            <span class="bg-gray-100 text-gray-600 px-2 py-1 text-xs rounded">Views</span>
+                            <span class="bg-gray-100 text-gray-600 px-2 py-1 text-xs rounded">Adventure</span>
+                        </div>
+                        <button class="w-full border-2 border-navy text-navy font-bold py-2 rounded-lg hover:bg-navy hover:text-white transition">View Details</button>
+                    </div>
+                </div>
+
+                <!-- Card 2 -->
+                <div class="border rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition duration-300 group">
+                    <div class="h-48 overflow-hidden relative">
+                        <img src="WhatsApp Image 2026-08-09 at 14.29.48.jpeg" alt="Himachal Campsite" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                        <span class="absolute top-4 right-4 bg-white/90 px-3 py-1 text-xs font-bold rounded-full text-terracotta shadow">Filling Fast</span>
+                    </div>
+                    <div class="p-6">
+                        <h4 class="text-xl font-bold text-navy mb-2">Himachal Basecamp & Chill</h4>
+                        <p class="text-gray-500 text-sm mb-4">Dates: Sept 20 - 25, 2026</p>
+                        <div class="flex gap-2 mb-6">
+                            <span class="bg-gray-100 text-gray-600 px-2 py-1 text-xs rounded">Nature</span>
+                            <span class="bg-gray-100 text-gray-600 px-2 py-1 text-xs rounded">Photography</span>
+                        </div>
+                        <button class="w-full border-2 border-navy text-navy font-bold py-2 rounded-lg hover:bg-navy hover:text-white transition">View Details</button>
+                    </div>
+                </div>
+
+                <!-- Card 3 -->
+                <div class="border rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition duration-300 group">
+                    <div class="h-48 overflow-hidden relative">
+                        <img src="winter spiti.jpeg" alt="Winter Spiti Tribe" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                        <span class="absolute top-4 right-4 bg-white/90 px-3 py-1 text-xs font-bold rounded-full text-green-600 shadow">New Tribe</span>
+                    </div>
+                    <div class="p-6">
+                        <h4 class="text-xl font-bold text-navy mb-2">Winter Spiti Expedition</h4>
+                        <p class="text-gray-500 text-sm mb-4">Dates: Oct 5 - 12, 2026</p>
+                        <div class="flex gap-2 mb-6">
+                            <span class="bg-gray-100 text-gray-600 px-2 py-1 text-xs rounded">Snow</span>
+                            <span class="bg-gray-100 text-gray-600 px-2 py-1 text-xs rounded">Extreme</span>
+                        </div>
+                        <button class="w-full border-2 border-navy text-navy font-bold py-2 rounded-lg hover:bg-navy hover:text-white transition">View Details</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Expanded Real Trips Gallery with Reviews -->
+    <section class="py-20 bg-offwhite">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <img src="PHOTO-2026-08-09-14-21-12 3.jpg" class="w-12 h-12 mx-auto mb-4 logo-mask opacity-80">
+                <h2 class="text-3xl md:text-4xl font-serif text-navy mb-2">Real Trips Gallery</h2>
+                <p class="text-gray-600">Not stock photos. Real Past Tribes & Connections.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Gallery 1 -->
+                <div class="text-center">
+                    <div class="aspect-w-4 aspect-h-3 mb-4 rounded-xl overflow-hidden shadow-md">
+                        <img src="PHOTO-2026-08-09-14-21-11.jpg" alt="Himachal Campsite & Trek" class="w-full h-full object-cover">
+                    </div>
+                    <h5 class="font-bold text-navy mb-2">Himachal Campsite & Trek</h5>
+                    <div class="text-gold mb-2 text-sm"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+                    <p class="italic text-gray-600 text-sm">"The itinerary was so well balanced, but honestly, the people made it. I went solo and came back with 15 friends."</p>
+                    <p class="text-xs font-bold text-gray-400 mt-2">— Rohan S.</p>
+                </div>
+
+                <!-- Gallery 2 -->
+                <div class="text-center">
+                    <div class="aspect-w-4 aspect-h-3 mb-4 rounded-xl overflow-hidden shadow-md">
+                        <img src="PHOTO-2026-08-09-14-21-11 2.jpg" alt="Khaliya Top Summit Group" class="w-full h-full object-cover">
+                    </div>
+                    <h5 class="font-bold text-navy mb-2">Khaliya Top Summit Group</h5>
+                    <div class="text-gold mb-2 text-sm"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+                    <p class="italic text-gray-600 text-sm">"Reaching the top together was magical. Our coordinator was essentially a friend who knew exactly what to do."</p>
+                    <p class="text-xs font-bold text-gray-400 mt-2">— Aditi K.</p>
+                </div>
+
+                <!-- Gallery 3 -->
+                <div class="text-center">
+                    <div class="aspect-w-4 aspect-h-3 mb-4 rounded-xl overflow-hidden shadow-md">
+                        <img src="PHOTO-2026-08-09-14-21-12.jpg" alt="Hilltop Village Exploration" class="w-full h-full object-cover">
+                    </div>
+                    <h5 class="font-bold text-navy mb-2">Hilltop Village Exploration</h5>
+                    <div class="text-gold mb-2 text-sm"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+                    <p class="italic text-gray-600 text-sm">"No rushing from spot to spot. Just good vibes, great conversations, and stunning views."</p>
+                    <p class="text-xs font-bold text-gray-400 mt-2">— Varun P.</p>
+                </div>
+
+                <!-- Gallery 4 -->
+                <div class="text-center mt-8 md:mt-0">
+                    <div class="aspect-w-4 aspect-h-3 mb-4 rounded-xl overflow-hidden shadow-md">
+                        <img src="PHOTO-2026-08-09-14-21-12 2.jpg" alt="Heritage Village Stay" class="w-full h-full object-cover">
+                    </div>
+                    <h5 class="font-bold text-navy mb-2">Heritage Village Stay</h5>
+                    <div class="text-gold mb-2 text-sm"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+                    <p class="italic text-gray-600 text-sm">"Living with the locals and our incredible group was an unforgettable cultural immersion."</p>
+                    <p class="text-xs font-bold text-gray-400 mt-2">— Sneha M.</p>
+                </div>
+
+                <!-- Gallery 5 -->
+                <div class="text-center mt-8 md:mt-0">
+                    <div class="aspect-w-4 aspect-h-3 mb-4 rounded-xl overflow-hidden shadow-md">
+                        <img src="PHOTO-2026-08-09-14-21-14.jpg" alt="High Altitude Expedition" class="w-full h-full object-cover">
+                    </div>
+                    <h5 class="font-bold text-navy mb-2">High Altitude Expedition</h5>
+                    <div class="text-gold mb-2 text-sm"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+                    <p class="italic text-gray-600 text-sm">"Pushing our limits in the snow with the best support system. Core memory unlocked!"</p>
+                    <p class="text-xs font-bold text-gray-400 mt-2">— Aman D.</p>
+                </div>
+
+                <!-- Gallery 6 -->
+                <div class="text-center mt-8 md:mt-0">
+                    <div class="aspect-w-4 aspect-h-3 mb-4 rounded-xl overflow-hidden shadow-md">
+                        <img src="PHOTO-2026-08-09-14-21-13 3.jpg" alt="Snow Trek Adventures" class="w-full h-full object-cover">
+                    </div>
+                    <h5 class="font-bold text-navy mb-2">Snow Trek Adventures</h5>
+                    <div class="text-gold mb-2 text-sm"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+                    <p class="italic text-gray-600 text-sm">"The brotherhood and fun we had scaling these peaks is hard to describe. 10/10."</p>
+                    <p class="text-xs font-bold text-gray-400 mt-2">— Karan V.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Meet Coordinator -->
+    <section class="py-16 bg-white border-y border-gray-100">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center gap-10">
+            <div class="w-32 h-32 bg-gray-200 rounded-full flex-shrink-0 flex items-center justify-center overflow-hidden">
+                <i class="fas fa-user-tie text-5xl text-gray-400"></i>
+            </div>
+            <div>
+                <h3 class="text-2xl font-serif text-navy mb-2">Meet Your Travel Experience Coordinator</h3>
+                <p class="text-gray-600">Forget the flag-waving tour guides. Our TECs are trained experts in local culture, safety, and group dynamics. They're like that one friend who always knows the best spots, seamlessly handling logistics so you can focus on the experience.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Traction -->
+    <section class="py-16 bg-navy text-white text-center">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-6">
+                <div>
+                    <i class="fas fa-users text-4xl text-gold mb-4"></i>
+                    <h3 class="text-4xl font-bold mb-1">200+</h3>
+                    <p class="text-lg opacity-80">Travellers</p>
+                </div>
+                <div>
+                    <i class="fas fa-paper-plane text-4xl text-gold mb-4"></i>
+                    <h3 class="text-4xl font-bold mb-1">7+</h3>
+                    <p class="text-lg opacity-80">Trips Completed</p>
+                </div>
+                <div>
+                    <i class="fas fa-users-viewfinder text-4xl text-gold mb-4"></i>
+                    <h3 class="text-4xl font-bold mb-1">20+</h3>
+                    <p class="text-lg opacity-80">Avg. Group Size</p>
+                </div>
+            </div>
+            <p class="text-xs opacity-50 italic">*Metrics illustrate recent traction (Confirm before publishing live)</p>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-50 py-12 border-t border-gray-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-8">
+                <div class="flex flex-col items-center md:items-start">
+                    <div class="flex items-center mb-4">
+                        <img src="PHOTO-2026-08-09-14-21-12 3.jpg" alt="Travel Tribe Logo" class="h-12 w-12 object-cover logo-mask shadow-sm">
+                        <span class="ml-3 font-serif font-bold text-xl text-navy">The Travel Tribe</span>
+                    </div>
+                    <p class="text-gray-500 text-sm text-center md:text-left max-w-xs">AI-assisted interest matching to group young travellers into Tribes of ~20 for authentic, backpacker-style trips.</p>
+                </div>
+                
+                <div class="flex flex-col items-center">
+                    <h5 class="font-bold text-navy mb-4">Join our newsletter for exclusive drops</h5>
+                    <form class="flex w-full max-w-sm shadow-sm rounded-lg">
+                        <input type="email" placeholder="Email address" class="px-4 py-2 border border-gray-300 rounded-l-lg focus:outline-none focus:border-terracotta w-full bg-white">
+                        <button type="button" class="bg-terracotta text-white px-4 py-2 rounded-r-lg hover:bg-orange-700">Notify</button>
+                    </form>
+                </div>
+
+                <div class="flex gap-4">
+                    <a href="#" class="w-10 h-10 rounded-full bg-navy text-white flex items-center justify-center hover:bg-terracotta transition"><i class="fab fa-instagram"></i></a>
+                    <a href="#" class="w-10 h-10 rounded-full bg-navy text-white flex items-center justify-center hover:bg-terracotta transition"><i class="fab fa-whatsapp"></i></a>
+                    <a href="#" class="w-10 h-10 rounded-full bg-navy text-white flex items-center justify-center hover:bg-terracotta transition"><i class="fab fa-linkedin-in"></i></a>
+                </div>
+            </div>
+            <div class="text-center mt-12 pt-8 border-t border-gray-200 text-sm text-gray-400">
+                &copy; 2026 The Travel Tribe. All rights reserved.
+            </div>
+        </div>
+    </footer>
+
+    <!-- JS Logic for Interest Match -->
+    <script>
+        document.getElementById('match-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Get form values
+            const dest = document.getElementById('dest').value;
+            
+            // Hide Form, Show Loading
+            document.getElementById('quiz-state').classList.add('hidden');
+            document.getElementById('loading-state').classList.remove('hidden');
+
+            // Simulate API Call / AI Processing delay (1.5 seconds)
+            setTimeout(() => {
+                document.getElementById('loading-state').classList.add('hidden');
+                
+                // Simple Logic: If Destination is Mountains, show match. Else show waitlist.
+                if (dest === 'mountains') {
+                    document.getElementById('match-found-state').classList.remove('hidden');
+                } else {
+                    document.getElementById('no-match-state').classList.remove('hidden');
+                }
+            }, 1500);
+        });
+
+        function resetMatch() {
+            document.getElementById('match-found-state').classList.add('hidden');
+            document.getElementById('no-match-state').classList.add('hidden');
+            document.getElementById('quiz-state').classList.remove('hidden');
+            document.getElementById('match-form').reset();
+        }
+    </script>
+</body>
+</html>
