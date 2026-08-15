@@ -1,0 +1,3573 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="description" content="Travel Tribe — Raw, flexible road trips & expeditions for India's Gen-Z community. Join a tribe. Explore beyond the itinerary." />
+  <title>Travel Tribe — Wander Wild. Travel Together.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Nunito:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    /* ============================================================
+       DESIGN TOKENS & RESET
+    ============================================================ */
+    :root {
+      --navy: #1B3A42;
+      --navy-dark: #112730;
+      --cream: #FDFBF7;
+      --cream-dark: #F4EFE6;
+      --orange: #E36F2C;
+      --orange-light: #F08040;
+      --gold: #F2A340;
+      --gold-light: #F7BE6A;
+      --white: #ffffff;
+      --text-primary: #1B3A42;
+      --text-secondary: #5A7A82;
+      --text-muted: #9AADB3;
+      --glass-bg: rgba(27,58,66,0.72);
+      --glass-light: rgba(253,251,247,0.80);
+      --shadow-card: 0 8px 32px rgba(27,58,66,0.12);
+      --shadow-heavy: 0 16px 48px rgba(27,58,66,0.24);
+      --radius-sm: 10px;
+      --radius-md: 18px;
+      --radius-lg: 28px;
+      --radius-pill: 100px;
+      --tab-height: 80px;
+      --header-height: 64px;
+      --font-headline: 'Outfit', sans-serif;
+      --font-body: 'Nunito', sans-serif;
+      --transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+      --transition-fast: all 0.18s cubic-bezier(0.4, 0, 0.2, 1);
+      --spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; overflow: hidden; }
+    body {
+      font-family: var(--font-body);
+      background: #0d1f24;
+      color: var(--text-primary);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      overscroll-behavior: none;
+    }
+
+    /* ============================================================
+       APP SHELL
+    ============================================================ */
+    #app {
+      position: relative;
+      width: 100%;
+      max-width: 430px;
+      height: 100dvh;
+      margin: 0 auto;
+      background: var(--cream);
+      overflow: hidden;
+      box-shadow: 0 0 80px rgba(0,0,0,0.6);
+    }
+
+    /* ============================================================
+       SCREENS
+    ============================================================ */
+    .screen {
+      position: absolute;
+      inset: 0;
+      background: var(--cream);
+      overflow-y: auto;
+      overflow-x: hidden;
+      padding-bottom: calc(var(--tab-height) + 16px);
+      scroll-behavior: smooth;
+      -webkit-overflow-scrolling: touch;
+      opacity: 0;
+      pointer-events: none;
+      transform: translateX(30px);
+      transition: opacity 0.38s ease, transform 0.38s cubic-bezier(0.4,0,0.2,1);
+      will-change: transform, opacity;
+    }
+    .screen.active {
+      opacity: 1;
+      pointer-events: all;
+      transform: translateX(0);
+    }
+    .screen.exit-left {
+      opacity: 0;
+      transform: translateX(-30px);
+    }
+    .screen.no-scroll { overflow: hidden; }
+
+    /* ============================================================
+       GLASS BOTTOM TAB BAR
+    ============================================================ */
+    #tab-bar {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: var(--tab-height);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      padding: 0 8px 8px;
+      background: var(--glass-light);
+      backdrop-filter: blur(24px) saturate(180%);
+      -webkit-backdrop-filter: blur(24px) saturate(180%);
+      border-top: 1px solid rgba(27,58,66,0.10);
+      box-shadow: 0 -8px 32px rgba(27,58,66,0.10);
+    }
+    .tab-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      padding: 8px 16px;
+      border-radius: var(--radius-pill);
+      cursor: pointer;
+      transition: var(--transition-fast);
+      -webkit-tap-highlight-color: transparent;
+      border: none;
+      background: none;
+      position: relative;
+    }
+    .tab-item:active { transform: scale(0.88); }
+    .tab-icon {
+      width: 26px;
+      height: 26px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: var(--transition-fast);
+    }
+    .tab-icon svg { transition: var(--transition-fast); }
+    .tab-label {
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--text-muted);
+      letter-spacing: 0.02em;
+      transition: var(--transition-fast);
+    }
+    .tab-item.active .tab-label { color: var(--orange); }
+    .tab-item.active .tab-icon svg { stroke: var(--orange); }
+    .tab-item:not(.active) .tab-icon svg { stroke: var(--text-muted); }
+    .tab-active-pill {
+      position: absolute;
+      top: 4px;
+      width: 40px;
+      height: 3px;
+      background: var(--orange);
+      border-radius: 2px;
+      transition: var(--transition);
+    }
+
+    /* ============================================================
+       SKELETON SHIMMER
+    ============================================================ */
+    @keyframes shimmer {
+      0% { background-position: -400px 0; }
+      100% { background-position: 400px 0; }
+    }
+    .skeleton {
+      background: linear-gradient(90deg, var(--cream-dark) 25%, #ece7dc 50%, var(--cream-dark) 75%);
+      background-size: 800px 100%;
+      animation: shimmer 1.4s infinite linear;
+      border-radius: var(--radius-sm);
+    }
+
+    /* ============================================================
+       TYPOGRAPHY UTILITIES
+    ============================================================ */
+    .headline { font-family: var(--font-headline); }
+    h1, h2, h3 { font-family: var(--font-headline); color: var(--navy); }
+
+    /* ============================================================
+       BUTTONS
+    ============================================================ */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 14px 24px;
+      border-radius: var(--radius-pill);
+      font-family: var(--font-body);
+      font-weight: 700;
+      font-size: 15px;
+      letter-spacing: 0.01em;
+      cursor: pointer;
+      border: none;
+      transition: var(--transition-fast);
+      -webkit-tap-highlight-color: transparent;
+      position: relative;
+      overflow: hidden;
+    }
+    .btn::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: rgba(255,255,255,0);
+      transition: background 0.2s;
+    }
+    .btn:active::after { background: rgba(255,255,255,0.15); }
+    .btn-primary {
+      background: var(--orange);
+      color: white;
+      box-shadow: 0 4px 20px rgba(227,111,44,0.4);
+    }
+    .btn-primary:active { transform: scale(0.96); box-shadow: 0 2px 12px rgba(227,111,44,0.3); }
+    .btn-secondary {
+      background: var(--navy);
+      color: white;
+    }
+    .btn-outline {
+      background: transparent;
+      color: var(--orange);
+      border: 2px solid var(--orange);
+    }
+    .btn-ghost {
+      background: rgba(27,58,66,0.08);
+      color: var(--navy);
+    }
+    .btn-sm { padding: 9px 18px; font-size: 13px; }
+    .btn-full { width: 100%; }
+
+    /* ============================================================
+       CARDS
+    ============================================================ */
+    .card {
+      background: white;
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-card);
+      overflow: hidden;
+    }
+    .card-image {
+      width: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    /* ============================================================
+       PILL CHIPS
+    ============================================================ */
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 16px;
+      border-radius: var(--radius-pill);
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+      border: none;
+      transition: var(--transition-fast);
+      -webkit-tap-highlight-color: transparent;
+    }
+    .chip-default {
+      background: var(--cream-dark);
+      color: var(--text-secondary);
+    }
+    .chip-active {
+      background: var(--navy);
+      color: white;
+    }
+    .chip:active { transform: scale(0.94); }
+
+    /* ============================================================
+       AVATAR CLUSTER
+    ============================================================ */
+    .avatar-cluster {
+      display: flex;
+      align-items: center;
+    }
+    .avatar-cluster .av {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      border: 2px solid white;
+      margin-left: -8px;
+      object-fit: cover;
+      font-size: 11px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      color: white;
+      flex-shrink: 0;
+    }
+    .avatar-cluster .av:first-child { margin-left: 0; }
+
+    /* ============================================================
+       EXPLORE SCREEN
+    ============================================================ */
+    #explore-screen { background: var(--cream); }
+
+    .explore-header {
+      padding: 56px 20px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+    }
+    .explore-greeting { }
+    .explore-greeting .sup {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+    .explore-greeting h1 {
+      font-size: 24px;
+      font-weight: 800;
+      color: var(--navy);
+      line-height: 1.2;
+      margin-top: 2px;
+    }
+    .header-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 4px;
+    }
+    .icon-btn {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      background: white;
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 2px 12px rgba(27,58,66,0.10);
+      transition: var(--transition-fast);
+      -webkit-tap-highlight-color: transparent;
+      position: relative;
+    }
+    .icon-btn:active { transform: scale(0.90); }
+    .notif-dot {
+      position: absolute;
+      top: 8px; right: 9px;
+      width: 8px; height: 8px;
+      background: var(--orange);
+      border-radius: 50%;
+      border: 2px solid white;
+    }
+
+    /* Hero Carousel */
+    .hero-carousel-wrap {
+      padding: 0 20px 24px;
+      position: relative;
+    }
+    .hero-carousel {
+      display: flex;
+      gap: 16px;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+      cursor: grab;
+    }
+    .hero-carousel::-webkit-scrollbar { display: none; }
+    .hero-carousel.grabbing { cursor: grabbing; }
+
+    .hero-card {
+      min-width: calc(100% - 0px);
+      height: 320px;
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      position: relative;
+      scroll-snap-align: start;
+      flex-shrink: 0;
+      box-shadow: var(--shadow-heavy);
+    }
+    .hero-card-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.6s ease;
+    }
+    .hero-card:hover .hero-card-img { transform: scale(1.03); }
+    .hero-card-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(10,24,28,0.92) 0%, rgba(10,24,28,0.4) 50%, transparent 100%);
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 24px;
+    }
+    .hero-card-drop-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--orange);
+      color: white;
+      padding: 5px 12px;
+      border-radius: var(--radius-pill);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+      width: fit-content;
+    }
+    .hero-card-drop-label .pulse {
+      width: 6px; height: 6px;
+      background: white;
+      border-radius: 50%;
+      animation: pulse-dot 1.5s infinite;
+    }
+    @keyframes pulse-dot {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(0.7); }
+    }
+    .hero-card-title {
+      font-family: var(--font-headline);
+      font-size: 26px;
+      font-weight: 800;
+      color: white;
+      line-height: 1.15;
+      margin-bottom: 8px;
+    }
+    .hero-card-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .hero-card-date {
+      font-size: 13px;
+      color: rgba(255,255,255,0.75);
+      font-weight: 500;
+    }
+    .hero-card-view-btn {
+      background: white;
+      color: var(--navy);
+      padding: 8px 18px;
+      border-radius: var(--radius-pill);
+      font-size: 13px;
+      font-weight: 700;
+      border: none;
+      cursor: pointer;
+      transition: var(--transition-fast);
+    }
+    .hero-card-view-btn:active { transform: scale(0.92); background: var(--orange); color: white; }
+
+    /* Carousel Dots */
+    .carousel-dots {
+      display: flex;
+      justify-content: center;
+      gap: 6px;
+      margin-top: 14px;
+    }
+    .carousel-dot {
+      width: 6px; height: 6px;
+      border-radius: 3px;
+      background: var(--cream-dark);
+      transition: var(--transition-fast);
+    }
+    .carousel-dot.active {
+      width: 20px;
+      background: var(--orange);
+    }
+
+    /* Category Chips */
+    .section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 20px;
+      margin-bottom: 14px;
+    }
+    .section-title {
+      font-family: var(--font-headline);
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--navy);
+    }
+    .section-link {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--orange);
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .category-scroll {
+      display: flex;
+      gap: 10px;
+      padding: 0 20px;
+      overflow-x: auto;
+      scrollbar-width: none;
+      margin-bottom: 28px;
+    }
+    .category-scroll::-webkit-scrollbar { display: none; }
+
+    /* Social Proof */
+    .social-proof {
+      margin: 0 20px 28px;
+      background: linear-gradient(135deg, var(--navy) 0%, #234a54 100%);
+      border-radius: var(--radius-md);
+      padding: 18px 20px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      box-shadow: 0 4px 24px rgba(27,58,66,0.25);
+    }
+    .social-proof-avatars {
+      display: flex;
+      align-items: center;
+    }
+    .social-proof-avatars .av {
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      border: 2.5px solid rgba(255,255,255,0.3);
+      margin-left: -10px;
+      font-size: 13px;
+      font-weight: 700;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .social-proof-avatars .av:first-child { margin-left: 0; }
+    .social-proof-text { flex: 1; }
+    .social-proof-count {
+      font-family: var(--font-headline);
+      font-size: 20px;
+      font-weight: 800;
+      color: white;
+      line-height: 1;
+    }
+    .social-proof-sub {
+      font-size: 12px;
+      color: rgba(255,255,255,0.65);
+      margin-top: 2px;
+    }
+    .social-proof-icon {
+      width: 36px; height: 36px;
+      background: var(--orange);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    /* Trip Cards */
+    .trips-feed {
+      padding: 0 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      padding-bottom: 8px;
+    }
+    .trip-card {
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      background: white;
+      box-shadow: var(--shadow-card);
+      cursor: pointer;
+      transition: var(--transition-fast);
+      -webkit-tap-highlight-color: transparent;
+    }
+    .trip-card:active { transform: scale(0.98); box-shadow: 0 4px 16px rgba(27,58,66,0.10); }
+    .trip-card-img-wrap {
+      position: relative;
+      height: 220px;
+      overflow: hidden;
+    }
+    .trip-card-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.5s ease;
+    }
+    .trip-card:hover .trip-card-img { transform: scale(1.04); }
+    .trip-card-img-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(10,24,28,0.85) 0%, transparent 60%);
+    }
+    .trip-card-img-content {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      padding: 16px;
+    }
+    .trip-card-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background: rgba(242,163,64,0.9);
+      color: white;
+      padding: 4px 10px;
+      border-radius: var(--radius-pill);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+    .trip-card-title {
+      font-family: var(--font-headline);
+      font-size: 21px;
+      font-weight: 800;
+      color: white;
+      line-height: 1.15;
+    }
+
+    .trip-card-body {
+      padding: 14px 16px 16px;
+    }
+    .trip-card-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+    .trip-card-dates {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      color: var(--text-secondary);
+      font-weight: 500;
+    }
+    .trip-card-price {
+      font-family: var(--font-headline);
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--orange);
+    }
+    .trip-card-price span {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-muted);
+      font-family: var(--font-body);
+    }
+    .trip-card-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .trip-spots {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .spots-badge {
+      background: rgba(227,111,44,0.12);
+      color: var(--orange);
+      padding: 4px 10px;
+      border-radius: var(--radius-pill);
+      font-size: 11px;
+      font-weight: 700;
+    }
+    .spots-names {
+      font-size: 12px;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    /* ============================================================
+       DESTINATIONS SCREEN
+    ============================================================ */
+    #destinations-screen { background: var(--cream); }
+    .dest-header {
+      padding: 56px 20px 24px;
+    }
+    .dest-header h1 {
+      font-size: 30px;
+      font-weight: 800;
+      color: var(--navy);
+      margin-bottom: 6px;
+    }
+    .dest-header p {
+      font-size: 14px;
+      color: var(--text-secondary);
+    }
+    .dest-grid {
+      padding: 0 20px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    .dest-card {
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      position: relative;
+      cursor: pointer;
+      transition: var(--transition-fast);
+      -webkit-tap-highlight-color: transparent;
+    }
+    .dest-card:active { transform: scale(0.96); }
+    .dest-card.large { grid-column: 1 / -1; height: 180px; }
+    .dest-card.small { height: 160px; }
+    .dest-card-img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.5s;
+    }
+    .dest-card:hover .dest-card-img { transform: scale(1.05); }
+    .dest-card-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(10,24,28,0.85) 0%, transparent 55%);
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 16px;
+    }
+    .dest-card-name {
+      font-family: var(--font-headline);
+      font-size: 18px;
+      font-weight: 800;
+      color: white;
+      line-height: 1.1;
+    }
+    .dest-card-count {
+      font-size: 12px;
+      color: rgba(255,255,255,0.65);
+      margin-top: 2px;
+    }
+    .dest-map-btn {
+      margin: 24px 20px;
+    }
+
+    /* ============================================================
+       DETAIL SCREEN
+    ============================================================ */
+    #detail-screen {
+      background: var(--cream);
+      padding-bottom: 100px;
+    }
+
+    .detail-hero {
+      position: relative;
+      height: 380px;
+      overflow: hidden;
+    }
+    .detail-hero-img {
+      width: 100%;
+      height: 120%;
+      object-fit: cover;
+      display: block;
+      transform: translateY(0);
+      will-change: transform;
+    }
+    .detail-hero-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, var(--cream) 0%, transparent 50%);
+    }
+    .detail-hero-actions {
+      position: absolute;
+      top: 52px;
+      left: 0; right: 0;
+      display: flex;
+      justify-content: space-between;
+      padding: 0 20px;
+    }
+    .detail-action-btn {
+      width: 44px; height: 44px;
+      border-radius: 50%;
+      background: var(--glass-light);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255,255,255,0.4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: var(--transition-fast);
+      -webkit-tap-highlight-color: transparent;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+    }
+    .detail-action-btn:active { transform: scale(0.88); }
+    .detail-action-btn.saved svg { fill: var(--orange); stroke: var(--orange); }
+
+    .detail-content {
+      padding: 0 20px;
+      margin-top: -30px;
+      position: relative;
+    }
+    .detail-region-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--orange);
+      color: white;
+      padding: 6px 14px;
+      border-radius: var(--radius-pill);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+    .detail-title {
+      font-family: var(--font-headline);
+      font-size: 30px;
+      font-weight: 800;
+      color: var(--navy);
+      line-height: 1.1;
+      margin-bottom: 20px;
+    }
+
+    .detail-stats-row {
+      display: flex;
+      gap: 0;
+      background: white;
+      border-radius: var(--radius-md);
+      padding: 16px 0;
+      box-shadow: var(--shadow-card);
+      margin-bottom: 28px;
+    }
+    .detail-stat {
+      flex: 1;
+      text-align: center;
+      padding: 0 12px;
+    }
+    .detail-stat:not(:last-child) {
+      border-right: 1px solid var(--cream-dark);
+    }
+    .detail-stat-icon {
+      font-size: 18px;
+      margin-bottom: 4px;
+    }
+    .detail-stat-val {
+      font-family: var(--font-headline);
+      font-size: 14px;
+      font-weight: 800;
+      color: var(--navy);
+      line-height: 1.1;
+    }
+    .detail-stat-label {
+      font-size: 10px;
+      color: var(--text-muted);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-top: 2px;
+    }
+
+    .detail-section-title {
+      font-family: var(--font-headline);
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--navy);
+      margin-bottom: 16px;
+    }
+    .detail-description {
+      font-size: 15px;
+      line-height: 1.7;
+      color: var(--text-secondary);
+      margin-bottom: 28px;
+    }
+
+    /* Itinerary Timeline */
+    .itinerary {
+      margin-bottom: 28px;
+    }
+    .itinerary-item {
+      display: flex;
+      gap: 16px;
+      cursor: pointer;
+      margin-bottom: 0;
+    }
+    .itinerary-item:last-child .itinerary-line { display: none; }
+    .itinerary-left {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 36px;
+      flex-shrink: 0;
+    }
+    .itinerary-dot {
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      background: var(--navy);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-headline);
+      font-size: 11px;
+      font-weight: 800;
+      color: white;
+      flex-shrink: 0;
+      transition: var(--transition-fast);
+    }
+    .itinerary-item.expanded .itinerary-dot {
+      background: var(--orange);
+    }
+    .itinerary-line {
+      flex: 1;
+      width: 2px;
+      background: var(--cream-dark);
+      margin: 4px 0;
+      min-height: 20px;
+    }
+    .itinerary-right {
+      flex: 1;
+      padding-bottom: 20px;
+    }
+    .itinerary-day-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 0;
+    }
+    .itinerary-day-title {
+      font-weight: 700;
+      font-size: 15px;
+      color: var(--navy);
+    }
+    .itinerary-day-subtitle {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 1px;
+    }
+    .itinerary-chevron {
+      transition: transform 0.3s ease;
+      flex-shrink: 0;
+    }
+    .itinerary-item.expanded .itinerary-chevron { transform: rotate(180deg); }
+    .itinerary-details {
+      background: var(--cream-dark);
+      border-radius: var(--radius-sm);
+      padding: 14px;
+      margin-top: 4px;
+      font-size: 14px;
+      line-height: 1.65;
+      color: var(--text-secondary);
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.4s ease, padding 0.3s ease, opacity 0.3s ease;
+      opacity: 0;
+      padding-top: 0;
+      padding-bottom: 0;
+    }
+    .itinerary-item.expanded .itinerary-details {
+      max-height: 200px;
+      opacity: 1;
+      padding: 14px;
+    }
+
+    /* Host & Tribe */
+    .host-section {
+      margin-bottom: 28px;
+    }
+    .host-card {
+      background: white;
+      border-radius: var(--radius-md);
+      padding: 16px;
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+      box-shadow: var(--shadow-card);
+      margin-bottom: 16px;
+    }
+    .host-avatar {
+      width: 56px; height: 56px;
+      border-radius: 50%;
+      object-fit: cover;
+      flex-shrink: 0;
+      background: var(--cream-dark);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--navy);
+      font-family: var(--font-headline);
+    }
+    .host-info { flex: 1; }
+    .host-name {
+      font-weight: 700;
+      font-size: 16px;
+      color: var(--navy);
+    }
+    .host-role {
+      font-size: 12px;
+      color: var(--orange);
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+    .host-bio {
+      font-size: 13px;
+      color: var(--text-secondary);
+      line-height: 1.55;
+    }
+    .host-trips-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background: rgba(27,58,66,0.08);
+      color: var(--navy);
+      padding: 4px 10px;
+      border-radius: var(--radius-pill);
+      font-size: 11px;
+      font-weight: 700;
+      margin-top: 8px;
+    }
+
+    .tribe-members {
+      background: white;
+      border-radius: var(--radius-md);
+      padding: 16px;
+      box-shadow: var(--shadow-card);
+    }
+    .tribe-members-title {
+      font-weight: 700;
+      font-size: 14px;
+      color: var(--navy);
+      margin-bottom: 12px;
+    }
+    .tribe-members-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .tribe-member-av {
+      width: 44px; height: 44px;
+      border-radius: 50%;
+      background: var(--cream-dark);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--navy);
+      flex-shrink: 0;
+    }
+    .tribe-more-count {
+      width: 44px; height: 44px;
+      border-radius: 50%;
+      background: var(--navy);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    /* Sticky Booking Footer */
+    .detail-booking-footer {
+      position: fixed;
+      bottom: var(--tab-height);
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100%;
+      max-width: 430px;
+      background: var(--glass-light);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-top: 1px solid rgba(27,58,66,0.10);
+      padding: 14px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      z-index: 500;
+      display: none;
+    }
+    .detail-booking-footer.visible { display: flex; }
+    .booking-price-col {}
+    .booking-price-label {
+      font-size: 11px;
+      color: var(--text-muted);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .booking-price-val {
+      font-family: var(--font-headline);
+      font-size: 26px;
+      font-weight: 800;
+      color: var(--navy);
+    }
+    .booking-price-val span {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-muted);
+      font-family: var(--font-body);
+    }
+
+    /* ============================================================
+       BOOKING MODAL
+    ============================================================ */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(10,24,28,0.6);
+      z-index: 900;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.35s ease;
+      backdrop-filter: blur(4px);
+    }
+    .modal-overlay.open { opacity: 1; pointer-events: all; }
+
+    .bottom-sheet {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      max-width: 430px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 28px 28px 0 0;
+      max-height: 90dvh;
+      overflow-y: auto;
+      transform: translateY(100%);
+      transition: transform 0.45s cubic-bezier(0.34,1.2,0.64,1);
+      box-shadow: 0 -8px 48px rgba(10,24,28,0.3);
+    }
+    .modal-overlay.open .bottom-sheet {
+      transform: translateY(0);
+    }
+    .sheet-handle {
+      width: 40px; height: 4px;
+      background: var(--cream-dark);
+      border-radius: 2px;
+      margin: 12px auto 0;
+    }
+    .sheet-header {
+      padding: 20px 24px 0;
+    }
+    .sheet-title {
+      font-family: var(--font-headline);
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--navy);
+    }
+    .sheet-subtitle {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+    .sheet-body {
+      padding: 20px 24px;
+    }
+
+    /* Step Indicator */
+    .step-indicator {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      margin: 16px 24px 0;
+    }
+    .step-dot {
+      width: 28px; height: 28px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 700;
+      transition: var(--transition-fast);
+      flex-shrink: 0;
+    }
+    .step-dot.done { background: var(--navy); color: white; }
+    .step-dot.active { background: var(--orange); color: white; box-shadow: 0 0 0 4px rgba(227,111,44,0.2); }
+    .step-dot.upcoming { background: var(--cream-dark); color: var(--text-muted); }
+    .step-line {
+      flex: 1;
+      height: 2px;
+      background: var(--cream-dark);
+      transition: background 0.3s;
+    }
+    .step-line.done { background: var(--navy); }
+
+    /* Date Picker Step */
+    .batch-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-top: 8px;
+    }
+    .batch-item {
+      border: 2px solid var(--cream-dark);
+      border-radius: var(--radius-md);
+      padding: 14px 16px;
+      cursor: pointer;
+      transition: var(--transition-fast);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .batch-item:active { transform: scale(0.97); }
+    .batch-item.selected {
+      border-color: var(--orange);
+      background: rgba(227,111,44,0.06);
+    }
+    .batch-dates {
+      font-weight: 700;
+      font-size: 15px;
+      color: var(--navy);
+    }
+    .batch-spots {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+    .batch-price {
+      font-family: var(--font-headline);
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--orange);
+    }
+
+    /* Addons Step */
+    .addon-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-top: 8px;
+    }
+    .addon-item {
+      background: var(--cream-dark);
+      border-radius: var(--radius-md);
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      transition: var(--transition-fast);
+      border: 2px solid transparent;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .addon-item.selected {
+      background: rgba(27,58,66,0.06);
+      border-color: var(--navy);
+    }
+    .addon-info { flex: 1; }
+    .addon-name {
+      font-weight: 700;
+      font-size: 14px;
+      color: var(--navy);
+    }
+    .addon-desc {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+    .addon-price {
+      font-weight: 800;
+      font-size: 15px;
+      color: var(--navy);
+      margin-right: 12px;
+    }
+    /* Toggle Switch */
+    .toggle {
+      width: 44px; height: 24px;
+      background: var(--cream-dark);
+      border-radius: 12px;
+      position: relative;
+      transition: var(--transition-fast);
+      flex-shrink: 0;
+    }
+    .toggle.on { background: var(--orange); }
+    .toggle::after {
+      content: '';
+      position: absolute;
+      top: 2px; left: 2px;
+      width: 20px; height: 20px;
+      background: white;
+      border-radius: 50%;
+      transition: transform 0.25s var(--spring);
+      box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+    }
+    .toggle.on::after { transform: translateX(20px); }
+
+    /* Dynamic Price Bar */
+    .dynamic-price-bar {
+      background: var(--navy);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      margin-top: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .dynamic-price-label {
+      font-size: 12px;
+      color: rgba(255,255,255,0.6);
+      font-weight: 600;
+    }
+    .dynamic-price-val {
+      font-family: var(--font-headline);
+      font-size: 24px;
+      font-weight: 800;
+      color: white;
+      transition: var(--transition-fast);
+    }
+    .price-breakdown {
+      margin-top: 4px;
+      font-size: 11px;
+      color: rgba(255,255,255,0.5);
+    }
+
+    /* Payment Step */
+    .cost-breakdown {
+      background: var(--cream-dark);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      margin-bottom: 16px;
+    }
+    .cost-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 0;
+      font-size: 14px;
+      color: var(--text-secondary);
+    }
+    .cost-row:not(:last-child) { border-bottom: 1px solid rgba(27,58,66,0.08); }
+    .cost-row.total {
+      font-weight: 800;
+      font-size: 17px;
+      color: var(--navy);
+    }
+    .cost-row.fee { color: var(--text-muted); font-size: 12px; }
+    .cost-row .zero-fee {
+      font-size: 11px;
+      background: rgba(34,197,94,0.15);
+      color: #16a34a;
+      padding: 2px 8px;
+      border-radius: 20px;
+      font-weight: 600;
+    }
+
+    .payment-methods {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    .payment-method {
+      border: 2px solid var(--cream-dark);
+      border-radius: var(--radius-md);
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      cursor: pointer;
+      transition: var(--transition-fast);
+      -webkit-tap-highlight-color: transparent;
+    }
+    .payment-method.selected { border-color: var(--orange); background: rgba(227,111,44,0.05); }
+    .payment-method:active { transform: scale(0.97); }
+    .payment-method-icon {
+      width: 36px; height: 36px;
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px;
+      flex-shrink: 0;
+    }
+    .payment-method-name {
+      font-weight: 700;
+      font-size: 14px;
+      color: var(--navy);
+    }
+    .payment-method-sub {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+    .payment-method .radio {
+      margin-left: auto;
+      width: 20px; height: 20px;
+      border-radius: 50%;
+      border: 2px solid var(--cream-dark);
+      flex-shrink: 0;
+      transition: var(--transition-fast);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .payment-method.selected .radio {
+      border-color: var(--orange);
+      background: var(--orange);
+    }
+    .payment-method.selected .radio::after {
+      content: '';
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: white;
+    }
+
+    /* Booking Success */
+    .booking-success {
+      text-align: center;
+      padding: 32px 24px;
+    }
+    .success-icon {
+      width: 80px; height: 80px;
+      background: linear-gradient(135deg, #22c55e, #16a34a);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 20px;
+      animation: success-pop 0.5s var(--spring);
+    }
+    @keyframes success-pop {
+      0% { transform: scale(0); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+    .success-title {
+      font-family: var(--font-headline);
+      font-size: 26px;
+      font-weight: 800;
+      color: var(--navy);
+      margin-bottom: 8px;
+    }
+    .success-sub {
+      font-size: 14px;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+    .success-confetti {
+      font-size: 32px;
+      margin-bottom: 12px;
+    }
+
+    /* Sheet navigation */
+    .sheet-nav {
+      display: flex;
+      gap: 12px;
+      padding: 16px 24px 28px;
+    }
+
+    /* ============================================================
+       TRIBE SCREEN
+    ============================================================ */
+    #tribe-screen { background: var(--cream); }
+    .tribe-header {
+      padding: 56px 20px 20px;
+    }
+    .tribe-header h1 {
+      font-size: 28px;
+      font-weight: 800;
+      color: var(--navy);
+      margin-bottom: 16px;
+    }
+    .top-tabs {
+      display: flex;
+      background: var(--cream-dark);
+      border-radius: var(--radius-pill);
+      padding: 4px;
+    }
+    .top-tab {
+      flex: 1;
+      padding: 10px;
+      border-radius: var(--radius-pill);
+      font-size: 13px;
+      font-weight: 700;
+      text-align: center;
+      cursor: pointer;
+      transition: var(--transition-fast);
+      color: var(--text-muted);
+      border: none;
+      background: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .top-tab.active {
+      background: white;
+      color: var(--navy);
+      box-shadow: 0 2px 8px rgba(27,58,66,0.12);
+    }
+
+    /* Chats */
+    .chats-list {
+      padding: 0 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+    .chat-item {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 14px 0;
+      border-bottom: 1px solid var(--cream-dark);
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .chat-item:active { opacity: 0.7; }
+    .chat-avatar {
+      width: 52px; height: 52px;
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      flex-shrink: 0;
+      position: relative;
+    }
+    .chat-avatar img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+    }
+    .chat-online {
+      position: absolute;
+      bottom: 2px; right: 2px;
+      width: 10px; height: 10px;
+      background: #22c55e;
+      border-radius: 50%;
+      border: 2px solid white;
+    }
+    .chat-info { flex: 1; min-width: 0; }
+    .chat-name {
+      font-weight: 700;
+      font-size: 15px;
+      color: var(--navy);
+    }
+    .chat-last-msg {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-top: 2px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .chat-meta {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 4px;
+    }
+    .chat-time {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+    .chat-badge {
+      background: var(--orange);
+      color: white;
+      width: 20px; height: 20px;
+      border-radius: 50%;
+      font-size: 11px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Moments */
+    .moments-feed {
+      padding: 0 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    .moment-card {
+      background: white;
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      box-shadow: var(--shadow-card);
+    }
+    .moment-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 14px;
+    }
+    .moment-avatar {
+      width: 38px; height: 38px;
+      border-radius: 50%;
+      background: var(--cream-dark);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--navy);
+      flex-shrink: 0;
+    }
+    .moment-user-name {
+      font-weight: 700;
+      font-size: 14px;
+      color: var(--navy);
+    }
+    .moment-trip-tag {
+      font-size: 11px;
+      color: var(--orange);
+      font-weight: 600;
+    }
+    .moment-time {
+      margin-left: auto;
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+    .moment-img {
+      width: 100%;
+      height: 280px;
+      object-fit: cover;
+      display: block;
+    }
+    .moment-footer {
+      padding: 12px 14px;
+    }
+    .moment-actions {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 10px;
+    }
+    .moment-action-btn {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+      background: none;
+      border: none;
+      transition: var(--transition-fast);
+    }
+    .moment-action-btn:active { transform: scale(0.9); }
+    .moment-action-btn.liked { color: #e11d48; }
+    .moment-action-btn.liked svg { fill: #e11d48; stroke: #e11d48; }
+    .moment-caption {
+      font-size: 14px;
+      color: var(--text-primary);
+      line-height: 1.55;
+    }
+    .moment-caption strong {
+      font-weight: 700;
+      color: var(--navy);
+    }
+
+    /* ============================================================
+       PROFILE SCREEN
+    ============================================================ */
+    #profile-screen { background: var(--cream); }
+
+    .profile-hero {
+      background: linear-gradient(160deg, var(--navy) 0%, #234a54 60%, #1a6070 100%);
+      padding: 56px 20px 80px;
+      position: relative;
+      overflow: hidden;
+    }
+    .profile-hero::before {
+      content: '';
+      position: absolute;
+      top: -40px; right: -40px;
+      width: 200px; height: 200px;
+      border-radius: 50%;
+      background: rgba(242,163,64,0.12);
+    }
+    .profile-hero::after {
+      content: '';
+      position: absolute;
+      bottom: -20px; left: -20px;
+      width: 120px; height: 120px;
+      border-radius: 50%;
+      background: rgba(227,111,44,0.10);
+    }
+    .profile-settings-btn {
+      position: absolute;
+      top: 52px; right: 20px;
+      width: 38px; height: 38px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.2);
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer;
+    }
+    .profile-avatar-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+      z-index: 1;
+    }
+    .profile-avatar {
+      width: 88px; height: 88px;
+      border-radius: 50%;
+      border: 4px solid rgba(255,255,255,0.25);
+      background: var(--cream-dark);
+      font-family: var(--font-headline);
+      font-size: 34px;
+      font-weight: 800;
+      color: var(--navy);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 12px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.25);
+    }
+    .profile-name {
+      font-family: var(--font-headline);
+      font-size: 22px;
+      font-weight: 800;
+      color: white;
+      margin-bottom: 6px;
+    }
+    .tribe-level-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--orange);
+      color: white;
+      padding: 5px 14px;
+      border-radius: var(--radius-pill);
+      font-size: 12px;
+      font-weight: 700;
+      margin-bottom: 20px;
+    }
+
+    .profile-stats {
+      display: flex;
+      background: white;
+      border-radius: var(--radius-md);
+      margin: -36px 20px 0;
+      position: relative;
+      z-index: 10;
+      box-shadow: var(--shadow-heavy);
+    }
+    .profile-stat {
+      flex: 1;
+      padding: 18px 8px;
+      text-align: center;
+    }
+    .profile-stat:not(:last-child) { border-right: 1px solid var(--cream-dark); }
+    .profile-stat-val {
+      font-family: var(--font-headline);
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--navy);
+    }
+    .profile-stat-label {
+      font-size: 11px;
+      color: var(--text-muted);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      margin-top: 2px;
+    }
+
+    .profile-tabs {
+      display: flex;
+      background: var(--cream-dark);
+      border-radius: var(--radius-pill);
+      padding: 4px;
+      margin: 24px 20px 0;
+    }
+    .profile-tab {
+      flex: 1;
+      padding: 10px 6px;
+      border-radius: var(--radius-pill);
+      font-size: 12px;
+      font-weight: 700;
+      text-align: center;
+      cursor: pointer;
+      transition: var(--transition-fast);
+      color: var(--text-muted);
+      border: none;
+      background: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .profile-tab.active {
+      background: white;
+      color: var(--navy);
+      box-shadow: 0 2px 8px rgba(27,58,66,0.12);
+    }
+
+    .profile-content {
+      padding: 20px;
+    }
+
+    .profile-trip-card {
+      background: white;
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      box-shadow: var(--shadow-card);
+      margin-bottom: 16px;
+      display: flex;
+      height: 100px;
+    }
+    .profile-trip-img {
+      width: 100px;
+      height: 100%;
+      object-fit: cover;
+      flex-shrink: 0;
+    }
+    .profile-trip-info {
+      padding: 14px;
+      flex: 1;
+    }
+    .profile-trip-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      padding: 3px 8px;
+      border-radius: 20px;
+      margin-bottom: 6px;
+    }
+    .status-upcoming { background: rgba(242,163,64,0.15); color: #c47d08; }
+    .status-past { background: rgba(27,58,66,0.10); color: var(--text-secondary); }
+    .profile-trip-name {
+      font-weight: 700;
+      font-size: 14px;
+      color: var(--navy);
+      line-height: 1.2;
+    }
+    .profile-trip-date {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    .bucket-card {
+      background: white;
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      box-shadow: var(--shadow-card);
+      margin-bottom: 16px;
+      position: relative;
+      height: 140px;
+    }
+    .bucket-card-img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .bucket-card-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(10,24,28,0.85) 0%, transparent 50%);
+      display: flex;
+      align-items: flex-end;
+      padding: 14px;
+    }
+    .bucket-card-title {
+      font-family: var(--font-headline);
+      font-size: 17px;
+      font-weight: 800;
+      color: white;
+    }
+    .bucket-card-price {
+      font-size: 13px;
+      color: var(--gold-light);
+      margin-top: 2px;
+    }
+
+    /* ============================================================
+       CHAT WINDOW MODAL
+    ============================================================ */
+    .chat-window-overlay {
+      position: fixed;
+      inset: 0;
+      background: var(--cream);
+      z-index: 950;
+      transform: translateX(100%);
+      transition: transform 0.38s cubic-bezier(0.4,0,0.2,1);
+      display: flex;
+      flex-direction: column;
+      max-width: 430px;
+      margin: 0 auto;
+    }
+    .chat-window-overlay.open { transform: translateX(0); }
+
+    .chat-window-header {
+      background: var(--navy);
+      padding: 52px 20px 16px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .chat-back-btn {
+      width: 38px; height: 38px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.1);
+      border: none;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+    .chat-window-title {
+      font-family: var(--font-headline);
+      font-size: 18px;
+      font-weight: 800;
+      color: white;
+    }
+    .chat-window-sub {
+      font-size: 12px;
+      color: rgba(255,255,255,0.55);
+    }
+    .chat-messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 16px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .msg-row {
+      display: flex;
+      gap: 8px;
+      align-items: flex-end;
+    }
+    .msg-row.mine {
+      flex-direction: row-reverse;
+    }
+    .msg-av {
+      width: 32px; height: 32px;
+      border-radius: 50%;
+      background: var(--cream-dark);
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--navy);
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .msg-bubble {
+      max-width: 70%;
+      padding: 10px 14px;
+      border-radius: 18px;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+    .msg-row:not(.mine) .msg-bubble {
+      background: white;
+      color: var(--navy);
+      border-bottom-left-radius: 4px;
+      box-shadow: 0 1px 4px rgba(27,58,66,0.08);
+    }
+    .msg-row.mine .msg-bubble {
+      background: var(--navy);
+      color: white;
+      border-bottom-right-radius: 4px;
+    }
+    .msg-time {
+      font-size: 10px;
+      color: var(--text-muted);
+      text-align: center;
+      align-self: center;
+      margin: 4px 0;
+    }
+    .chat-input-wrap {
+      background: white;
+      border-top: 1px solid var(--cream-dark);
+      padding: 12px 16px;
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+    .chat-input {
+      flex: 1;
+      background: var(--cream-dark);
+      border: none;
+      border-radius: var(--radius-pill);
+      padding: 12px 16px;
+      font-family: var(--font-body);
+      font-size: 14px;
+      color: var(--navy);
+      outline: none;
+    }
+    .chat-send-btn {
+      width: 44px; height: 44px;
+      border-radius: 50%;
+      background: var(--orange);
+      border: none;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 2px 12px rgba(227,111,44,0.4);
+      transition: var(--transition-fast);
+      flex-shrink: 0;
+    }
+    .chat-send-btn:active { transform: scale(0.88); }
+
+    /* ============================================================
+       ANIMATIONS
+    ============================================================ */
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    .anim-fadein-up {
+      animation: fadeInUp 0.5s ease forwards;
+    }
+
+    /* Ripple */
+    .ripple-effect {
+      position: absolute;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.35);
+      transform: scale(0);
+      animation: ripple-anim 0.6s ease-out;
+      pointer-events: none;
+    }
+    @keyframes ripple-anim {
+      to { transform: scale(4); opacity: 0; }
+    }
+
+    /* ============================================================
+       LOADING SCREEN
+    ============================================================ */
+    #loading-screen {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      background: var(--navy);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      transition: opacity 0.5s ease;
+    }
+    .loading-logo {
+      font-family: var(--font-headline);
+      font-size: 36px;
+      font-weight: 800;
+      color: white;
+      letter-spacing: -0.02em;
+      margin-bottom: 8px;
+    }
+    .loading-logo span { color: var(--orange); }
+    .loading-tagline {
+      font-size: 13px;
+      color: rgba(255,255,255,0.5);
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      margin-bottom: 48px;
+    }
+    .loading-bar-wrap {
+      width: 120px;
+      height: 3px;
+      background: rgba(255,255,255,0.12);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+    .loading-bar {
+      height: 100%;
+      background: var(--orange);
+      border-radius: 2px;
+      animation: load-progress 1.6s ease-in-out forwards;
+    }
+    @keyframes load-progress {
+      0% { width: 0%; }
+      60% { width: 75%; }
+      100% { width: 100%; }
+    }
+
+    /* ============================================================
+       MISC UTILITY
+    ============================================================ */
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+    .hidden { display: none !important; }
+    .section-mb { margin-bottom: 24px; }
+  </style>
+</head>
+<body>
+
+<!-- Loading Screen -->
+<div id="loading-screen">
+  <div class="loading-logo">Travel <span>Tribe</span></div>
+  <div class="loading-tagline">Wander Wild. Travel Together.</div>
+  <div class="loading-bar-wrap">
+    <div class="loading-bar"></div>
+  </div>
+</div>
+
+<!-- App Shell -->
+<div id="app">
+
+  <!-- ═══════════════════════════════════════
+       SCREEN 1: EXPLORE
+  ═══════════════════════════════════════ -->
+  <div class="screen active" id="explore-screen">
+
+    <!-- Header -->
+    <div class="explore-header">
+      <div class="explore-greeting">
+        <div class="sup">Good Evening 🌙</div>
+        <h1>Hey, Arjun 👋</h1>
+      </div>
+      <div class="header-actions">
+        <button class="icon-btn" id="search-btn" aria-label="Search">
+          <svg width="20" height="20" fill="none" stroke="#1B3A42" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        </button>
+        <button class="icon-btn" aria-label="Notifications">
+          <div class="notif-dot"></div>
+          <svg width="20" height="20" fill="none" stroke="#1B3A42" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Hero Carousel -->
+    <div class="hero-carousel-wrap">
+      <div class="hero-carousel" id="heroCarousel">
+
+        <div class="hero-card" onclick="openDetail(0)">
+          <img src="spiti.jpg" alt="Spiti Valley Expedition" class="hero-card-img" loading="eager" />
+          <div class="hero-card-overlay">
+            <div class="hero-card-drop-label"><div class="pulse"></div> New Drop</div>
+            <div class="hero-card-title">Spiti Valley<br>Expedition</div>
+            <div class="hero-card-meta">
+              <div class="hero-card-date">📅 Aug 24 — Sep 2, 2026</div>
+              <button class="hero-card-view-btn" onclick="event.stopPropagation(); openDetail(0)">View</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="hero-card" onclick="openDetail(1)">
+          <img src="meghalaya.jpg" alt="Meghalaya Jungle Drop" class="hero-card-img" loading="lazy" />
+          <div class="hero-card-overlay">
+            <div class="hero-card-drop-label"><div class="pulse"></div> Selling Fast</div>
+            <div class="hero-card-title">Meghalaya<br>Cave & Falls</div>
+            <div class="hero-card-meta">
+              <div class="hero-card-date">📅 Sep 12 — Sep 17, 2026</div>
+              <button class="hero-card-view-btn" onclick="event.stopPropagation(); openDetail(1)">View</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="hero-card" onclick="openDetail(2)">
+          <img src="rajasthan.jpg" alt="Rajasthan Desert Safari" class="hero-card-img" loading="lazy" />
+          <div class="hero-card-overlay">
+            <div class="hero-card-drop-label"><div class="pulse"></div> Limited Spots</div>
+            <div class="hero-card-title">Rajasthan<br>Desert Safari</div>
+            <div class="hero-card-meta">
+              <div class="hero-card-date">📅 Oct 1 — Oct 7, 2026</div>
+              <button class="hero-card-view-btn" onclick="event.stopPropagation(); openDetail(2)">View</button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <div class="carousel-dots">
+        <div class="carousel-dot active" id="dot-0"></div>
+        <div class="carousel-dot" id="dot-1"></div>
+        <div class="carousel-dot" id="dot-2"></div>
+      </div>
+    </div>
+
+    <!-- Categories -->
+    <div class="section-mb">
+      <div class="section-header">
+        <div class="section-title">Vibe Check</div>
+      </div>
+      <div class="category-scroll" id="categoryScroll">
+        <button class="chip chip-active" data-cat="all" onclick="filterCategory(this, 'all')">All Trips</button>
+        <button class="chip chip-default" data-cat="altitude" onclick="filterCategory(this, 'altitude')">🏔️ High Altitudes</button>
+        <button class="chip chip-default" data-cat="desert" onclick="filterCategory(this, 'desert')">🐪 Desert Safaris</button>
+        <button class="chip chip-default" data-cat="weekend" onclick="filterCategory(this, 'weekend')">⚡ Weekend Escapes</button>
+        <button class="chip chip-default" data-cat="backpack" onclick="filterCategory(this, 'backpack')">🎒 Backpacking</button>
+        <button class="chip chip-default" data-cat="water" onclick="filterCategory(this, 'water')">🌊 Islands</button>
+      </div>
+    </div>
+
+    <!-- Social Proof -->
+    <div class="social-proof">
+      <div class="social-proof-avatars">
+        <div class="av" style="background:#E36F2C;">Y</div>
+        <div class="av" style="background:#1B3A42;">P</div>
+        <div class="av" style="background:#F2A340;">S</div>
+        <div class="av" style="background:#234a54;">R</div>
+      </div>
+      <div class="social-proof-text">
+        <div class="social-proof-count" id="travelerCount">248</div>
+        <div class="social-proof-sub">Travelers exploring right now</div>
+      </div>
+      <div class="social-proof-icon">
+        <svg width="18" height="18" fill="none" stroke="white" stroke-width="2.5" viewBox="0 0 24 24"><path d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+      </div>
+    </div>
+
+    <!-- Trips Feed -->
+    <div class="section-mb">
+      <div class="section-header">
+        <div class="section-title">Upcoming Drops</div>
+        <div class="section-link">See all →</div>
+      </div>
+      <div class="trips-feed" id="tripsFeed">
+
+        <!-- Trip Card 1 -->
+        <div class="trip-card" data-cats="altitude backpack" onclick="openDetail(0)">
+          <div class="trip-card-img-wrap">
+            <img src="spiti.jpg" alt="Spiti Valley" class="trip-card-img" loading="lazy" />
+            <div class="trip-card-img-overlay"></div>
+            <div class="trip-card-img-content">
+              <div class="trip-card-tag">🏔️ High Altitude</div>
+              <div class="trip-card-title">Spiti Valley Expedition</div>
+            </div>
+          </div>
+          <div class="trip-card-body">
+            <div class="trip-card-row">
+              <div class="trip-card-dates">
+                <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                Aug 24 → Sep 2
+              </div>
+              <div class="trip-card-price">₹12,499 <span>/person</span></div>
+            </div>
+            <div class="trip-card-footer">
+              <div class="trip-spots">
+                <div class="avatar-cluster">
+                  <div class="av" style="background:#E36F2C;">Y</div>
+                  <div class="av" style="background:#1B3A42;">P</div>
+                  <div class="av" style="background:#F2A340;">S</div>
+                </div>
+                <div>
+                  <div class="spots-badge">4 spots left</div>
+                  <div class="spots-names">Join Yug & 7 others</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Trip Card 2 -->
+        <div class="trip-card" data-cats="backpack water" onclick="openDetail(1)">
+          <div class="trip-card-img-wrap">
+            <img src="meghalaya.jpg" alt="Meghalaya" class="trip-card-img" loading="lazy" />
+            <div class="trip-card-img-overlay"></div>
+            <div class="trip-card-img-content">
+              <div class="trip-card-tag">🌿 Jungle & Caves</div>
+              <div class="trip-card-title">Meghalaya Cave & Falls</div>
+            </div>
+          </div>
+          <div class="trip-card-body">
+            <div class="trip-card-row">
+              <div class="trip-card-dates">
+                <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                Sep 12 → Sep 17
+              </div>
+              <div class="trip-card-price">₹8,999 <span>/person</span></div>
+            </div>
+            <div class="trip-card-footer">
+              <div class="trip-spots">
+                <div class="avatar-cluster">
+                  <div class="av" style="background:#234a54;">A</div>
+                  <div class="av" style="background:#E36F2C;">N</div>
+                </div>
+                <div>
+                  <div class="spots-badge">7 spots left</div>
+                  <div class="spots-names">Join Ananya & 4 others</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Trip Card 3 -->
+        <div class="trip-card" data-cats="desert" onclick="openDetail(2)">
+          <div class="trip-card-img-wrap">
+            <img src="rajasthan.jpg" alt="Rajasthan Desert" class="trip-card-img" loading="lazy" />
+            <div class="trip-card-img-overlay"></div>
+            <div class="trip-card-img-content">
+              <div class="trip-card-tag">🐪 Desert Safari</div>
+              <div class="trip-card-title">Rajasthan Desert Safari</div>
+            </div>
+          </div>
+          <div class="trip-card-body">
+            <div class="trip-card-row">
+              <div class="trip-card-dates">
+                <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                Oct 1 → Oct 7
+              </div>
+              <div class="trip-card-price">₹9,499 <span>/person</span></div>
+            </div>
+            <div class="trip-card-footer">
+              <div class="trip-spots">
+                <div class="avatar-cluster">
+                  <div class="av" style="background:#F2A340;">R</div>
+                  <div class="av" style="background:#1B3A42;">K</div>
+                  <div class="av" style="background:#E36F2C;">V</div>
+                </div>
+                <div>
+                  <div class="spots-badge">2 spots left</div>
+                  <div class="spots-names">Join Rohan & 9 others</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Trip Card 4 -->
+        <div class="trip-card" data-cats="weekend backpack" onclick="openDetail(3)">
+          <div class="trip-card-img-wrap">
+            <img src="coorg.jpg" alt="Coorg Weekend" class="trip-card-img" loading="lazy" />
+            <div class="trip-card-img-overlay"></div>
+            <div class="trip-card-img-content">
+              <div class="trip-card-tag">☕ Weekend Escape</div>
+              <div class="trip-card-title">Coorg Coffee Trails</div>
+            </div>
+          </div>
+          <div class="trip-card-body">
+            <div class="trip-card-row">
+              <div class="trip-card-dates">
+                <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                Sep 27 → Sep 29
+              </div>
+              <div class="trip-card-price">₹4,999 <span>/person</span></div>
+            </div>
+            <div class="trip-card-footer">
+              <div class="trip-spots">
+                <div class="avatar-cluster">
+                  <div class="av" style="background:#234a54;">M</div>
+                </div>
+                <div>
+                  <div class="spots-badge">10 spots left</div>
+                  <div class="spots-names">Join Meera & 2 others</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div><!-- /explore-screen -->
+
+  <!-- ═══════════════════════════════════════
+       SCREEN 2: DESTINATIONS
+  ═══════════════════════════════════════ -->
+  <div class="screen" id="destinations-screen">
+    <div class="dest-header">
+      <h1>Explore India</h1>
+      <p>Pick your region — we'll take you there raw.</p>
+    </div>
+    <div class="dest-grid">
+      <div class="dest-card large" onclick="openDetail(0)">
+        <img src="spiti.jpg" alt="Himachal Pradesh" class="dest-card-img" loading="lazy" />
+        <div class="dest-card-overlay">
+          <div class="dest-card-name">Himachal Pradesh</div>
+          <div class="dest-card-count">4 active trips</div>
+        </div>
+      </div>
+      <div class="dest-card small" onclick="openDetail(2)">
+        <img src="rajasthan.jpg" alt="Rajasthan" class="dest-card-img" loading="lazy" />
+        <div class="dest-card-overlay">
+          <div class="dest-card-name">Rajasthan</div>
+          <div class="dest-card-count">3 trips</div>
+        </div>
+      </div>
+      <div class="dest-card small" onclick="openDetail(1)">
+        <img src="meghalaya.jpg" alt="North East" class="dest-card-img" loading="lazy" />
+        <div class="dest-card-overlay">
+          <div class="dest-card-name">North East</div>
+          <div class="dest-card-count">5 trips</div>
+        </div>
+      </div>
+      <div class="dest-card small" onclick="openDetail(3)">
+        <img src="coorg.jpg" alt="Karnataka" class="dest-card-img" loading="lazy" />
+        <div class="dest-card-overlay">
+          <div class="dest-card-name">Karnataka</div>
+          <div class="dest-card-count">2 trips</div>
+        </div>
+      </div>
+      <div class="dest-card small" onclick="openDetail(4)">
+        <img src="andaman.jpg" alt="Andaman Islands" class="dest-card-img" loading="lazy" />
+        <div class="dest-card-overlay">
+          <div class="dest-card-name">Andaman Islands</div>
+          <div class="dest-card-count">2 trips</div>
+        </div>
+      </div>
+      <div class="dest-card large" onclick="openDetail(5)">
+        <img src="kedarnath.jpg" alt="Uttarakhand" class="dest-card-img" loading="lazy" />
+        <div class="dest-card-overlay">
+          <div class="dest-card-name">Uttarakhand</div>
+          <div class="dest-card-count">6 active trips</div>
+        </div>
+      </div>
+    </div>
+    <div class="dest-map-btn">
+      <button class="btn btn-secondary btn-full" style="border-radius: 16px;">
+        <svg width="18" height="18" fill="none" stroke="white" stroke-width="2.2" viewBox="0 0 24 24"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/><line x1="8" y1="2" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="22"/></svg>
+        View Full Map
+      </button>
+    </div>
+  </div><!-- /destinations-screen -->
+
+  <!-- ═══════════════════════════════════════
+       SCREEN 3: TRIP DETAIL (overlay)
+  ═══════════════════════════════════════ -->
+  <div class="screen no-scroll" id="detail-screen">
+    <div class="detail-hero">
+      <img id="detail-hero-img" src="spiti.jpg" alt="Trip" class="detail-hero-img" />
+      <div class="detail-hero-overlay"></div>
+      <div class="detail-hero-actions">
+        <button class="detail-action-btn" onclick="closeDetail()" aria-label="Back">
+          <svg width="20" height="20" fill="none" stroke="#1B3A42" stroke-width="2.5" stroke-linecap="round" viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+        </button>
+        <button class="detail-action-btn" id="saveBtn" onclick="toggleSave()" aria-label="Save trip">
+          <svg width="20" height="20" fill="none" stroke="#1B3A42" stroke-width="2.2" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <div class="detail-content">
+      <div id="detail-region-tag" class="detail-region-tag">📍 Himachal Pradesh</div>
+      <h1 class="detail-title" id="detail-title">Spiti Valley Expedition</h1>
+
+      <!-- Stats Row -->
+      <div class="detail-stats-row">
+        <div class="detail-stat">
+          <div class="detail-stat-icon">🌙</div>
+          <div class="detail-stat-val" id="detail-duration">9N / 10D</div>
+          <div class="detail-stat-label">Duration</div>
+        </div>
+        <div class="detail-stat">
+          <div class="detail-stat-icon">⚡</div>
+          <div class="detail-stat-val" id="detail-vibe">High Energy</div>
+          <div class="detail-stat-label">Vibe</div>
+        </div>
+        <div class="detail-stat">
+          <div class="detail-stat-icon">👥</div>
+          <div class="detail-stat-val" id="detail-group">12 Max</div>
+          <div class="detail-stat-label">Group</div>
+        </div>
+      </div>
+
+      <!-- Description -->
+      <div class="detail-section-title">About this Trip</div>
+      <div class="detail-description" id="detail-desc">
+        Forget the tour bus. This is a real raw expedition into one of India's most remote high-altitude valleys. 
+        Expect monastery hopping, star-gazing at 4000m, and chai with monks. No fixed schedule — just vibes and breathtaking views.
+      </div>
+
+      <!-- Itinerary -->
+      <div class="detail-section-title">The Itinerary</div>
+      <div class="itinerary" id="itinerary-list">
+        <!-- Injected by JS -->
+      </div>
+
+      <!-- Host & Tribe -->
+      <div class="host-section">
+        <div class="detail-section-title">Your Trip Lead</div>
+        <div class="host-card">
+          <div class="host-avatar">YS</div>
+          <div class="host-info">
+            <div class="host-name" id="host-name">Yug Sharma</div>
+            <div class="host-role">Trip Lead · Travel Tribe</div>
+            <div class="host-bio" id="host-bio">Himalayan trail runner and storyteller with 12 years of expedition experience. Fluent in Spiti local culture. He doesn't do rigid schedules.</div>
+            <div class="host-trips-badge">🏔️ 34 expeditions led</div>
+          </div>
+        </div>
+        <div class="tribe-members">
+          <div class="tribe-members-title">Your Tribe So Far (8/12 joined)</div>
+          <div class="tribe-members-row">
+            <div class="tribe-member-av">P</div>
+            <div class="tribe-member-av">A</div>
+            <div class="tribe-member-av">S</div>
+            <div class="tribe-member-av">R</div>
+            <div class="tribe-member-av">N</div>
+            <div class="tribe-more-count">+3</div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /detail-content -->
+
+    <!-- Sticky Footer -->
+    <div class="detail-booking-footer visible" id="bookingFooter">
+      <div class="booking-price-col">
+        <div class="booking-price-label">Starting from</div>
+        <div class="booking-price-val" id="footer-price">₹12,499 <span>/person</span></div>
+      </div>
+      <button class="btn btn-primary" onclick="openBookingModal()" id="book-btn">
+        Customize & Book ✦
+      </button>
+    </div>
+  </div><!-- /detail-screen -->
+
+  <!-- ═══════════════════════════════════════
+       SCREEN 4: TRIBE
+  ═══════════════════════════════════════ -->
+  <div class="screen" id="tribe-screen">
+    <div class="tribe-header">
+      <h1>Your Tribe 🔥</h1>
+      <div class="top-tabs">
+        <button class="top-tab active" id="tab-chats" onclick="switchTribeTab('chats')">💬 My Chats</button>
+        <button class="top-tab" id="tab-moments" onclick="switchTribeTab('moments')">📸 Moments</button>
+      </div>
+    </div>
+
+    <!-- Chats List -->
+    <div id="tribe-chats" class="tab-content active">
+      <div class="chats-list">
+        <div class="chat-item" onclick="openChatWindow('Spiti Squad — Sept \'26', 'spiti.jpg')">
+          <div class="chat-avatar">
+            <img src="spiti.jpg" alt="Spiti Squad" />
+            <div class="chat-online"></div>
+          </div>
+          <div class="chat-info">
+            <div class="chat-name">Spiti Squad — Sept '26</div>
+            <div class="chat-last-msg">Yug: packing list is pinned guys, don't forget thermals!</div>
+          </div>
+          <div class="chat-meta">
+            <div class="chat-time">2m ago</div>
+            <div class="chat-badge">4</div>
+          </div>
+        </div>
+
+        <div class="chat-item" onclick="openChatWindow('Meghalaya Crew', 'meghalaya.jpg')">
+          <div class="chat-avatar">
+            <img src="meghalaya.jpg" alt="Meghalaya Crew" />
+          </div>
+          <div class="chat-info">
+            <div class="chat-name">Meghalaya Crew</div>
+            <div class="chat-last-msg">Ananya: the root bridge hike was INSANE 🌿</div>
+          </div>
+          <div class="chat-meta">
+            <div class="chat-time">1h ago</div>
+            <div class="chat-badge">11</div>
+          </div>
+        </div>
+
+        <div class="chat-item" onclick="openChatWindow('Coorg Coffee Fam ☕', 'coorg.jpg')">
+          <div class="chat-avatar">
+            <img src="coorg.jpg" alt="Coorg Coffee" />
+          </div>
+          <div class="chat-info">
+            <div class="chat-name">Coorg Coffee Fam ☕</div>
+            <div class="chat-last-msg">Meera: anyone want to share a cab from Bangalore?</div>
+          </div>
+          <div class="chat-meta">
+            <div class="chat-time">3h ago</div>
+          </div>
+        </div>
+
+        <div class="chat-item" onclick="openChatWindow('Rajasthan Riders 🐪', 'rajasthan.jpg')">
+          <div class="chat-avatar">
+            <img src="rajasthan.jpg" alt="Rajasthan Riders" />
+          </div>
+          <div class="chat-info">
+            <div class="chat-name">Rajasthan Riders 🐪</div>
+            <div class="chat-last-msg">Rohan: sunset dune photos just dropped in Moments!</div>
+          </div>
+          <div class="chat-meta">
+            <div class="chat-time">1d ago</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Moments Feed -->
+    <div id="tribe-moments" class="tab-content">
+      <div class="moments-feed" style="padding-top:0">
+        <div class="moment-card">
+          <div class="moment-header">
+            <div class="moment-avatar">Y</div>
+            <div>
+              <div class="moment-user-name">Yug Sharma</div>
+              <div class="moment-trip-tag">Spiti Valley Expedition</div>
+            </div>
+            <div class="moment-time">2d ago</div>
+          </div>
+          <img src="spiti.jpg" alt="Spiti" class="moment-img" loading="lazy" />
+          <div class="moment-footer">
+            <div class="moment-actions">
+              <button class="moment-action-btn" id="like-0" onclick="toggleLike('like-0', 'likes-0')">
+                <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                <span id="likes-0">142</span>
+              </button>
+              <button class="moment-action-btn">
+                <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                28
+              </button>
+              <button class="moment-action-btn">
+                <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+              </button>
+            </div>
+            <div class="moment-caption">
+              <strong>Yug Sharma</strong> 4,500m above sea level. The road to Kaza hits differently at sunrise. 
+              No words — just this. 🏔️✨ <em>#SpitValley #TravelTribe #Himachal</em>
+            </div>
+          </div>
+        </div>
+
+        <div class="moment-card">
+          <div class="moment-header">
+            <div class="moment-avatar" style="background:#E8F5E9; color:#2e7d32;">A</div>
+            <div>
+              <div class="moment-user-name">Ananya Rao</div>
+              <div class="moment-trip-tag">Meghalaya Cave & Falls</div>
+            </div>
+            <div class="moment-time">5d ago</div>
+          </div>
+          <img src="meghalaya.jpg" alt="Meghalaya" class="moment-img" loading="lazy" />
+          <div class="moment-footer">
+            <div class="moment-actions">
+              <button class="moment-action-btn liked" id="like-1" onclick="toggleLike('like-1', 'likes-1')">
+                <svg width="20" height="20" fill="#e11d48" stroke="#e11d48" stroke-width="2" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                <span id="likes-1">89</span>
+              </button>
+              <button class="moment-action-btn">
+                <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                14
+              </button>
+            </div>
+            <div class="moment-caption">
+              <strong>Ananya Rao</strong> Day 3 — crossed the living root bridge at dawn. 
+              1000 year old tree roots, zero tourists, 100% magic 🌿🙏 <em>#Meghalaya #OffBeat</em>
+            </div>
+          </div>
+        </div>
+
+        <div class="moment-card">
+          <div class="moment-header">
+            <div class="moment-avatar" style="background:#FFF8E1; color:#E36F2C;">R</div>
+            <div>
+              <div class="moment-user-name">Rohan Kapoor</div>
+              <div class="moment-trip-tag">Rajasthan Desert Safari</div>
+            </div>
+            <div class="moment-time">1w ago</div>
+          </div>
+          <img src="rajasthan.jpg" alt="Rajasthan" class="moment-img" loading="lazy" />
+          <div class="moment-footer">
+            <div class="moment-actions">
+              <button class="moment-action-btn" id="like-2" onclick="toggleLike('like-2', 'likes-2')">
+                <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                <span id="likes-2">203</span>
+              </button>
+              <button class="moment-action-btn">
+                <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                47
+              </button>
+            </div>
+            <div class="moment-caption">
+              <strong>Rohan Kapoor</strong> Camel safari sunset in Jaisalmer. No filter needed when the sky looks like this 🐪🔥
+              <em>#Rajasthan #DesertVibes #TravelTribe</em>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /tribe-screen -->
+
+  <!-- ═══════════════════════════════════════
+       SCREEN 5: PROFILE
+  ═══════════════════════════════════════ -->
+  <div class="screen" id="profile-screen">
+
+    <div class="profile-hero">
+      <button class="profile-settings-btn" aria-label="Settings">
+        <svg width="18" height="18" fill="none" stroke="rgba(255,255,255,0.8)" stroke-width="2.2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+      </button>
+      <div class="profile-avatar-wrap">
+        <div class="profile-avatar">A</div>
+        <div class="profile-name">Arjun Mehta</div>
+        <div class="tribe-level-badge">🔥 Explorer · Level 3</div>
+      </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="profile-stats">
+      <div class="profile-stat">
+        <div class="profile-stat-val" id="prof-trips">3</div>
+        <div class="profile-stat-label">Trips</div>
+      </div>
+      <div class="profile-stat">
+        <div class="profile-stat-val">4.5K</div>
+        <div class="profile-stat-label">Km</div>
+      </div>
+      <div class="profile-stat">
+        <div class="profile-stat-val">34</div>
+        <div class="profile-stat-label">Tribe Met</div>
+      </div>
+    </div>
+
+    <!-- Profile Tabs -->
+    <div class="profile-tabs">
+      <button class="profile-tab active" id="ptab-trips" onclick="switchProfileTab('trips')">My Trips</button>
+      <button class="profile-tab" id="ptab-saved" onclick="switchProfileTab('saved')">Saved</button>
+      <button class="profile-tab" id="ptab-settings" onclick="switchProfileTab('settings')">Settings</button>
+    </div>
+
+    <!-- My Trips -->
+    <div id="ptab-trips-content" class="profile-content tab-content active">
+      <div style="font-size:12px; color:var(--text-muted); font-weight:700; text-transform:uppercase; letter-spacing:0.06em; margin-bottom:12px;">Upcoming</div>
+      <div class="profile-trip-card" id="prof-booked-trip">
+        <img src="spiti.jpg" alt="Spiti" class="profile-trip-img" />
+        <div class="profile-trip-info">
+          <div class="profile-trip-status status-upcoming">⏳ Upcoming</div>
+          <div class="profile-trip-name">Spiti Valley Expedition</div>
+          <div class="profile-trip-date">Aug 24 – Sep 2, 2026</div>
+        </div>
+      </div>
+
+      <div style="font-size:12px; color:var(--text-muted); font-weight:700; text-transform:uppercase; letter-spacing:0.06em; margin:16px 0 12px;">Past Adventures</div>
+      <div class="profile-trip-card">
+        <img src="coorg.jpg" alt="Coorg" class="profile-trip-img" />
+        <div class="profile-trip-info">
+          <div class="profile-trip-status status-past">✓ Completed</div>
+          <div class="profile-trip-name">Coorg Coffee Trails</div>
+          <div class="profile-trip-date">Mar 15 – 17, 2026</div>
+        </div>
+      </div>
+      <div class="profile-trip-card">
+        <img src="rajasthan.jpg" alt="Rajasthan" class="profile-trip-img" />
+        <div class="profile-trip-info">
+          <div class="profile-trip-status status-past">✓ Completed</div>
+          <div class="profile-trip-name">Rajasthan Forts Ride</div>
+          <div class="profile-trip-date">Jan 3 – 9, 2026</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Saved -->
+    <div id="ptab-saved-content" class="profile-content tab-content">
+      <div id="saved-empty" class="hidden" style="text-align:center; padding: 40px 20px; color:var(--text-muted);">
+        <div style="font-size:48px; margin-bottom:12px;">🤍</div>
+        <div style="font-weight:700; font-size:16px; color:var(--navy);">Your bucket list is empty</div>
+        <div style="font-size:13px; margin-top:6px;">Start saving trips you love</div>
+      </div>
+      <div id="saved-list">
+        <div class="bucket-card" onclick="openDetail(1)">
+          <img src="meghalaya.jpg" alt="Meghalaya" class="bucket-card-img" loading="lazy" />
+          <div class="bucket-card-overlay">
+            <div>
+              <div class="bucket-card-title">Meghalaya Cave & Falls</div>
+              <div class="bucket-card-price">from ₹8,999</div>
+            </div>
+          </div>
+        </div>
+        <div class="bucket-card" onclick="openDetail(4)">
+          <img src="andaman.jpg" alt="Andaman" class="bucket-card-img" loading="lazy" />
+          <div class="bucket-card-overlay">
+            <div>
+              <div class="bucket-card-title">Andaman Deep Dive</div>
+              <div class="bucket-card-price">from ₹18,499</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Settings -->
+    <div id="ptab-settings-content" class="profile-content tab-content">
+      <div style="display:flex; flex-direction:column; gap:2px;">
+        <div style="padding:16px 0; border-bottom:1px solid var(--cream-dark); display:flex; align-items:center; justify-content:space-between; cursor:pointer;">
+          <div>
+            <div style="font-weight:700; font-size:14px; color:var(--navy);">Edit Profile</div>
+            <div style="font-size:12px; color:var(--text-muted);">Name, photo, bio</div>
+          </div>
+          <svg width="16" height="16" fill="none" stroke="var(--text-muted)" stroke-width="2" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+        </div>
+        <div style="padding:16px 0; border-bottom:1px solid var(--cream-dark); display:flex; align-items:center; justify-content:space-between; cursor:pointer;">
+          <div>
+            <div style="font-weight:700; font-size:14px; color:var(--navy);">Payment Methods</div>
+            <div style="font-size:12px; color:var(--text-muted);">UPI, Cards, Google Pay</div>
+          </div>
+          <svg width="16" height="16" fill="none" stroke="var(--text-muted)" stroke-width="2" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+        </div>
+        <div style="padding:16px 0; border-bottom:1px solid var(--cream-dark); display:flex; align-items:center; justify-content:space-between; cursor:pointer;">
+          <div>
+            <div style="font-weight:700; font-size:14px; color:var(--navy);">Notifications</div>
+            <div style="font-size:12px; color:var(--text-muted);">Trip drops, messages</div>
+          </div>
+          <svg width="16" height="16" fill="none" stroke="var(--text-muted)" stroke-width="2" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+        </div>
+        <div style="padding:16px 0; border-bottom:1px solid var(--cream-dark); display:flex; align-items:center; justify-content:space-between; cursor:pointer;">
+          <div>
+            <div style="font-weight:700; font-size:14px; color:var(--navy);">Privacy & Safety</div>
+            <div style="font-size:12px; color:var(--text-muted);">Manage your data</div>
+          </div>
+          <svg width="16" height="16" fill="none" stroke="var(--text-muted)" stroke-width="2" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+        </div>
+        <div style="padding:16px 0; display:flex; align-items:center; justify-content:space-between; cursor:pointer;" onclick="alert('Logged out (demo mode)')">
+          <div style="font-weight:700; font-size:14px; color:#e11d48;">Log Out</div>
+          <svg width="16" height="16" fill="none" stroke="#e11d48" stroke-width="2" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /profile-screen -->
+
+  <!-- ═══════════════════════════════════════
+       BOTTOM TAB BAR
+  ═══════════════════════════════════════ -->
+  <nav id="tab-bar" role="navigation" aria-label="Main navigation">
+    <button class="tab-item active" id="tab-explore" onclick="switchTab('explore')" aria-label="Explore">
+      <div class="tab-icon">
+        <svg width="22" height="22" fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      </div>
+      <span class="tab-label">Explore</span>
+    </button>
+    <button class="tab-item" id="tab-destinations" onclick="switchTab('destinations')" aria-label="Destinations">
+      <div class="tab-icon">
+        <svg width="22" height="22" fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/><line x1="8" y1="2" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="22"/></svg>
+      </div>
+      <span class="tab-label">Destinations</span>
+    </button>
+    <button class="tab-item" id="tab-tribe" onclick="switchTab('tribe')" aria-label="Tribe">
+      <div class="tab-icon">
+        <svg width="22" height="22" fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      </div>
+      <span class="tab-label">Tribe</span>
+    </button>
+    <button class="tab-item" id="tab-profile" onclick="switchTab('profile')" aria-label="Profile">
+      <div class="tab-icon">
+        <svg width="22" height="22" fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      </div>
+      <span class="tab-label">Profile</span>
+    </button>
+  </nav>
+
+  <!-- ═══════════════════════════════════════
+       BOOKING MODAL (Bottom Sheet)
+  ═══════════════════════════════════════ -->
+  <div class="modal-overlay" id="bookingOverlay" onclick="closeBookingModal(event)">
+    <div class="bottom-sheet" id="bookingSheet">
+      <div class="sheet-handle"></div>
+      <div class="sheet-header">
+        <div class="sheet-title" id="sheet-title">Customize & Book</div>
+        <div class="sheet-subtitle" id="sheet-subtitle">Spiti Valley Expedition</div>
+      </div>
+
+      <!-- Step Indicator -->
+      <div class="step-indicator">
+        <div class="step-dot active" id="step-dot-1">1</div>
+        <div class="step-line" id="step-line-1"></div>
+        <div class="step-dot upcoming" id="step-dot-2">2</div>
+        <div class="step-line" id="step-line-2"></div>
+        <div class="step-dot upcoming" id="step-dot-3">3</div>
+      </div>
+
+      <!-- Step 1: Dates -->
+      <div class="sheet-body" id="step-1-content">
+        <div style="font-weight:700; font-size:15px; color:var(--navy); margin-bottom:14px;">Choose Your Dates</div>
+        <div class="batch-list">
+          <div class="batch-item selected" id="batch-0" onclick="selectBatch(0, 12499)">
+            <div>
+              <div class="batch-dates">Aug 24 → Sep 2, 2026</div>
+              <div class="batch-spots">4 spots left · Batch 1</div>
+            </div>
+            <div class="batch-price">₹12,499</div>
+          </div>
+          <div class="batch-item" id="batch-1" onclick="selectBatch(1, 11999)">
+            <div>
+              <div class="batch-dates">Sep 14 → Sep 23, 2026</div>
+              <div class="batch-spots">9 spots left · Batch 2</div>
+            </div>
+            <div class="batch-price">₹11,999</div>
+          </div>
+          <div class="batch-item" id="batch-2" onclick="selectBatch(2, 12999)">
+            <div>
+              <div class="batch-dates">Oct 5 → Oct 14, 2026</div>
+              <div class="batch-spots">12 spots left · Batch 3</div>
+            </div>
+            <div class="batch-price">₹12,999</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 2: Addons -->
+      <div class="sheet-body hidden" id="step-2-content">
+        <div style="font-weight:700; font-size:15px; color:var(--navy); margin-bottom:14px;">Customize Your Trip</div>
+        <div class="addon-list">
+          <div class="addon-item" id="addon-0" onclick="toggleAddon(0, 2500)">
+            <div class="addon-info">
+              <div class="addon-name">🛏️ Private Room Upgrade</div>
+              <div class="addon-desc">Solo or couples room instead of dorm</div>
+            </div>
+            <div class="addon-price">+₹2,500</div>
+            <div class="toggle" id="toggle-0"></div>
+          </div>
+          <div class="addon-item" id="addon-1" onclick="toggleAddon(1, 1800)">
+            <div class="addon-info">
+              <div class="addon-name">🌊 Whitewater Rafting</div>
+              <div class="addon-desc">Grade IV rapid run on Spiti river</div>
+            </div>
+            <div class="addon-price">+₹1,800</div>
+            <div class="toggle" id="toggle-1"></div>
+          </div>
+          <div class="addon-item" id="addon-2" onclick="toggleAddon(2, 800)">
+            <div class="addon-info">
+              <div class="addon-name">🥾 Rent Trekking Boots</div>
+              <div class="addon-desc">Professional grade, waterproof</div>
+            </div>
+            <div class="addon-price">+₹800</div>
+            <div class="toggle" id="toggle-2"></div>
+          </div>
+          <div class="addon-item" id="addon-3" onclick="toggleAddon(3, 1200)">
+            <div class="addon-info">
+              <div class="addon-name">📸 Trip Photography</div>
+              <div class="addon-desc">Professional photos delivered in 48h</div>
+            </div>
+            <div class="addon-price">+₹1,200</div>
+            <div class="toggle" id="toggle-3"></div>
+          </div>
+        </div>
+        <div class="dynamic-price-bar">
+          <div>
+            <div class="dynamic-price-label">Total Cost</div>
+            <div class="price-breakdown" id="addon-breakdown">Base: ₹12,499</div>
+          </div>
+          <div class="dynamic-price-val" id="dynamic-total">₹12,499</div>
+        </div>
+      </div>
+
+      <!-- Step 3: Payment -->
+      <div class="sheet-body hidden" id="step-3-content">
+        <div style="font-weight:700; font-size:15px; color:var(--navy); margin-bottom:14px;">Review & Pay</div>
+        <div class="cost-breakdown" id="cost-breakdown">
+          <div class="cost-row">
+            <span>Base Trip Cost</span>
+            <span id="pay-base">₹12,499</span>
+          </div>
+          <div class="cost-row" id="pay-addons-row" style="display:none;">
+            <span>Add-ons</span>
+            <span id="pay-addons">₹0</span>
+          </div>
+          <div class="cost-row fee">
+            <span>Platform Fee</span>
+            <span class="zero-fee">₹0 — Zero Fees</span>
+          </div>
+          <div class="cost-row total">
+            <span>Total</span>
+            <span id="pay-total">₹12,499</span>
+          </div>
+        </div>
+        <div style="font-weight:700; font-size:14px; color:var(--navy); margin-bottom:12px;">Pay with</div>
+        <div class="payment-methods">
+          <div class="payment-method selected" id="pm-gpay" onclick="selectPayment('gpay')">
+            <div class="payment-method-icon" style="background:#fff; border:1px solid #eee;">G</div>
+            <div>
+              <div class="payment-method-name">Google Pay</div>
+              <div class="payment-method-sub">arjunmehta@okaxis</div>
+            </div>
+            <div class="radio"></div>
+          </div>
+          <div class="payment-method" id="pm-upi" onclick="selectPayment('upi')">
+            <div class="payment-method-icon" style="background:#F4EFE6;">💳</div>
+            <div>
+              <div class="payment-method-name">UPI</div>
+              <div class="payment-method-sub">Enter UPI ID</div>
+            </div>
+            <div class="radio"></div>
+          </div>
+          <div class="payment-method" id="pm-card" onclick="selectPayment('card')">
+            <div class="payment-method-icon" style="background:#E8F5FF;">🏦</div>
+            <div>
+              <div class="payment-method-name">Debit / Credit Card</div>
+              <div class="payment-method-sub">Visa, Mastercard, Rupay</div>
+            </div>
+            <div class="radio"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Booking Success -->
+      <div class="sheet-body hidden" id="step-success-content">
+        <div class="booking-success">
+          <div class="success-confetti">🎉</div>
+          <div class="success-icon">
+            <svg width="36" height="36" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+          <div class="success-title">You're in the Tribe!</div>
+          <div class="success-sub">Your spot for <strong>Spiti Valley Expedition</strong> is confirmed! Check your Tribe chat for updates from your squad.</div>
+        </div>
+      </div>
+
+      <!-- Sheet Nav Buttons -->
+      <div class="sheet-nav" id="sheet-nav">
+        <button class="btn btn-ghost" id="sheet-back-btn" onclick="sheetBack()" style="display:none;">← Back</button>
+        <button class="btn btn-primary btn-full" id="sheet-next-btn" onclick="sheetNext()">
+          Choose Add-ons →
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════
+       CHAT WINDOW OVERLAY
+  ═══════════════════════════════════════ -->
+  <div class="chat-window-overlay" id="chatWindowOverlay">
+    <div class="chat-window-header">
+      <button class="chat-back-btn" onclick="closeChatWindow()">
+        <svg width="20" height="20" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+      </button>
+      <div>
+        <div class="chat-window-title" id="chat-window-title">Spiti Squad</div>
+        <div class="chat-window-sub">12 members · 8 online</div>
+      </div>
+    </div>
+    <div class="chat-messages" id="chatMessages">
+      <div class="msg-time">Yesterday, 9:42 PM</div>
+      <div class="msg-row">
+        <div class="msg-av">Y</div>
+        <div class="msg-bubble">Hey team! Everyone got their Rohtang Pass permits sorted?</div>
+      </div>
+      <div class="msg-row">
+        <div class="msg-av" style="background:#E36F2C;color:white;">P</div>
+        <div class="msg-bubble">Yes! Applied 2 weeks back. Should be fine ✅</div>
+      </div>
+      <div class="msg-row mine">
+        <div class="msg-av" style="background:#1B3A42;color:white;">A</div>
+        <div class="msg-bubble">Still pending for me 😬 Is it too late?</div>
+      </div>
+      <div class="msg-row">
+        <div class="msg-av">Y</div>
+        <div class="msg-bubble">Not at all! DM me — I know the local official in Manali 🤙</div>
+      </div>
+      <div class="msg-time">Today, 8:15 AM</div>
+      <div class="msg-row">
+        <div class="msg-av" style="background:#F2A340;color:white;">S</div>
+        <div class="msg-bubble">Packing list is pinned guys! Don't forget thermals. It gets to -5°C at night at Kaza 🥶</div>
+      </div>
+      <div class="msg-row mine">
+        <div class="msg-av" style="background:#1B3A42;color:white;">A</div>
+        <div class="msg-bubble">Thanks! Already ordered a down jacket. Can't wait!! 🏔️</div>
+      </div>
+    </div>
+    <div class="chat-input-wrap">
+      <input class="chat-input" id="chatInput" type="text" placeholder="Message the squad..." />
+      <button class="chat-send-btn" onclick="sendChatMessage()" aria-label="Send">
+        <svg width="18" height="18" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+      </button>
+    </div>
+  </div>
+
+</div><!-- /app -->
+
+<script>
+  /* ============================================================
+     APP STATE (Backend Data Layer)
+  ============================================================ */
+  const DB = {
+    user: { id: 'u1', name: 'Arjun Mehta', tribLevel: 'Explorer', trips: 3, km: 4500, tribeMet: 34 },
+    trips: [
+      {
+        id: 0, title: 'Spiti Valley Expedition', region: '📍 Himachal Pradesh',
+        img: 'spiti.jpg', basePrice: 12499, duration: '9N / 10D', vibe: 'High Energy', group: '12 Max',
+        desc: "Forget the tour bus. This is a real raw expedition into one of India's most remote high-altitude valleys. Expect monastery hopping, star-gazing at 4000m, and chai with monks. No fixed schedule — just vibes and breathtaking views.",
+        host: { name: 'Yug Sharma', initials: 'YS', bio: "Himalayan trail runner and storyteller with 12 years of expedition experience. Fluent in Spiti local culture. He doesn't do rigid schedules.", trips: 34 },
+        itinerary: [
+          { day: 'Day 1', title: 'Fly to Manali', sub: 'Arrive & Settle In', details: 'Land at Chandigarh airport, scenic drive to Manali via the Beas valley. Meet your tribe at a bonfire dinner by the river. Orientation with Yug over local chai.' },
+          { day: 'Day 2-3', title: 'Manali → Kaza', sub: 'The Epic Drive (via Rohtang)', details: 'Cross the legendary Rohtang Pass (3978m). Stop at Chandra Tal lake if road conditions allow. Wild camping under 8000 stars. Howling winds, insane skies.' },
+          { day: 'Day 4', title: 'Kaza Exploration', sub: 'Ki Monastery & Local Market', details: 'Morning visit to Ki Gompa (11th century monastery). Afternoon free — explore the local market, try yak cheese, and frame your best Instagram shots.' },
+          { day: 'Day 5-6', title: 'Hiking & Village Hops', sub: 'Langza, Hikkim & Komic', details: 'Three villages above 4000m. Langza has a giant Buddha overlooking the valley. Hikkim has the world\'s highest post office — we\'ll write postcards. Komic is pure magic.' },
+          { day: 'Day 7', title: 'Spiti River Rafting', sub: 'Optional Adventure Add-on', details: 'Grade III-IV rapids on the Spiti river. The canyon walls close in on both sides. Absolutely not for the faint-hearted. Bookable as an add-on.' },
+          { day: 'Day 8-10', title: 'Return & Debrief', sub: 'Pin Valley → Shimla Route', details: 'Alternate scenic return via Pin Valley and Kinnaur. Stop at Sarahan Bhimakali temple. Last dinner as a tribe in Shimla. Part ways richer, wilder, and with a WhatsApp group for life.' }
+        ]
+      },
+      {
+        id: 1, title: 'Meghalaya Cave & Falls', region: '📍 North East India',
+        img: 'meghalaya.jpg', basePrice: 8999, duration: '5N / 6D', vibe: 'Nature & Soul', group: '10 Max',
+        desc: "Six days in the wettest place on Earth. We trek to living root bridges built over 1000 years, cave through the longest cave system in Asia, and swim in natural pools only accessible via 3-hour hikes. Zero Instagram filter needed.",
+        host: { name: 'Ananya Rao', initials: 'AR', bio: "Wildlife biologist turned trip lead. Has spent 3 monsoons deep in the Meghalayan jungle. Knows every hidden waterfall.", trips: 18 },
+        itinerary: [
+          { day: 'Day 1', title: 'Arrive in Guwahati', sub: 'Transfer to Shillong', details: 'Short drive from Guwahati to Shillong (2.5h). Check into our cozy heritage homestay in Police Bazaar. Tribe dinner with local jadoh (pork and rice) and tuborg.' },
+          { day: 'Day 2', title: 'Cherrapunji Day Trip', sub: 'Living Root Bridges & Nohkalikai Falls', details: 'The famous double-decker root bridge trek (1600 steps each way). Swim in the natural pool at the bottom. Late afternoon at Nohkalikai Falls — the tallest plunge waterfall in India.' },
+          { day: 'Day 3-4', title: 'Mawsmai Caves & Mawlynnong', sub: 'Caving & Cleanest Village', details: 'Morning cave exploration. Afternoon drive to Mawlynnong, voted Asia\'s cleanest village. Stay with a local Khasi family — home-cooked dinner, real culture exchange.' },
+          { day: 'Day 5', title: 'Dawki River Crossing', sub: 'Crystal Clear Kayaking', details: 'Row a wooden boat on the impossibly transparent Umngot river. The boat appears to float on glass. Cross into Bangladesh border viewpoint.' },
+          { day: 'Day 6', title: 'Depart from Guwahati', sub: 'Last chai & goodbyes', details: 'Morning free for shopping at Shillong Police Bazaar. Transfer to Guwahati for flights out. Memories that\'ll outlast your phone storage.' }
+        ]
+      },
+      {
+        id: 2, title: 'Rajasthan Desert Safari', region: '📍 Rajasthan',
+        img: 'rajasthan.jpg', basePrice: 9499, duration: '6N / 7D', vibe: 'Cultural Dive', group: '14 Max',
+        desc: "Royal forts, camel backs, sand dunes at sunset, folk music under stars, and blue city rooftops. This is Rajasthan as it was meant to be experienced — slow, colorful, and completely un-Googled.",
+        host: { name: 'Rohan Kapoor', initials: 'RK', bio: "Jaipur-born historian and adventure guide. Speaks fluent Marwari. His family has been in Jaisalmer for 5 generations.", trips: 22 },
+        itinerary: [
+          { day: 'Day 1', title: 'Jaipur — The Pink City', sub: 'Amber Fort & Hawa Mahal', details: 'Land in Jaipur. Sunset at Nahargarh Fort — the city turns golden. Group rooftop dinner in the old city. First chai of many.' },
+          { day: 'Day 2-3', title: 'Jodhpur — The Blue City', sub: 'Mehrangarh Fort & Narrow Lanes', details: 'Drive to Jodhpur (5h). Explore the impossible blue alleyways of the old city. Spice market chaos. Local musicians play in the evening.' },
+          { day: 'Day 4-5', title: 'Jaisalmer — The Golden City', sub: 'Desert & Camel Safari', details: 'Check into a haveli inside Jaisalmer fort. Afternoon camel trek into the Sam Sand Dunes. Overnight glamping. Bonfire, folk music, unreal stars.' },
+          { day: 'Day 6-7', title: 'Return via Pushkar', sub: 'Holy Lake & Brahma Temple', details: 'Morning free in Jaisalmer. Drive to Pushkar (4h) — the only Brahma temple in the world. Walk the ghats, eat lassis. Evening departure from Ajmer or Jaipur.' }
+        ]
+      },
+      {
+        id: 3, title: 'Coorg Coffee Trails', region: '📍 Karnataka',
+        img: 'coorg.jpg', basePrice: 4999, duration: '2N / 3D', vibe: 'Laid-Back Bliss', group: '16 Max',
+        desc: "A weekend getaway for when the city is too loud. Walk through coffee and cardamom estates, visit a waterfall no one's heard of, and spend evenings on a bungalow porch with a local brew in hand.",
+        host: { name: 'Meera Iyer', initials: 'MI', bio: "Coffee planter\'s daughter and weekend warrior. Knows every trail in Coorg that doesn\'t appear on Google Maps.", trips: 12 },
+        itinerary: [
+          { day: 'Day 1', title: 'Arrive in Coorg', sub: 'Plantation Walk & Sunset', details: 'Drive from Bangalore (~5h). Check into our private estate bungalow. Guided walk through 100-acre coffee and pepper plantation. Sunset from the hilltop with local toddy.' },
+          { day: 'Day 2', title: 'Waterfalls & Abbey Falls', sub: 'Trek & Swim', details: 'Morning hike to Iruppu Falls (not the touristy part — we know the secret trail). Swim in a natural pool. Afternoon at Abbey Falls. Village lunch at a local Kodava home.' },
+          { day: 'Day 3', title: 'Raja\'s Seat & Departure', sub: 'Morning Misty Views', details: 'Sunrise at Raja\'s Seat viewpoint — the mist rolls in from the valley below. Coffee tasting at the estate before you pack up and drive back to the real world. Reluctantly.' }
+        ]
+      },
+      {
+        id: 4, title: 'Andaman Deep Dive', region: '📍 Andaman Islands',
+        img: 'andaman.jpg', basePrice: 18499, duration: '5N / 6D', vibe: 'Ocean & Adrenaline', group: '8 Max',
+        desc: "The most biodiverse reef in India, above and below water. We snorkel, scuba dive (no experience needed), kayak through mangroves, and camp on a beach only reachable by boat.",
+        host: { name: 'Dev Kumar', initials: 'DK', bio: "PADI Divemaster and marine conservationist. Has spent 200+ hours underwater in the Andaman Sea. Zero tolerance for single-use plastic on his trips.", trips: 28 },
+        itinerary: [
+          { day: 'Day 1', title: 'Port Blair → Havelock', sub: 'Ferry & First Swim', details: 'Ferry from Port Blair to Havelock Island (1.5h). Drop bags at our beachfront villa. First dip in Radhanagar Beach — voted Asia\'s best beach.' },
+          { day: 'Day 2', title: 'Scuba Discovery Dive', sub: 'No Experience Needed', details: 'Morning briefing with Dev. First open water dive at Neil\'s Cove — visibility 20m+, coral gardens, rays, and if lucky, turtles. Afternoon free on the beach.' },
+          { day: 'Day 3', title: 'Mangrove Kayaking', sub: 'Sunrise Paddle + Snorkel', details: 'Pre-dawn kayak through mangrove channels. Watch bioluminescence if we time it right. Snorkel at Elephant Beach — the coral here is pristine.' },
+          { day: 'Day 4', title: 'Beach Camping', sub: 'Remote Island Overnight', details: 'Boat to a deserted island. No electricity, no crowds. Catch-and-cook dinner on the beach. Sleep under the Milky Way.' },
+          { day: 'Day 5-6', title: 'Return to Reality', sub: 'Neil Island & Port Blair', details: 'Slow morning. Ferry to Neil Island for a last snorkel. Evening ferry back to Port Blair. Departure next morning.' }
+        ]
+      },
+      {
+        id: 5, title: 'Kedarnath Trek', region: '📍 Uttarakhand',
+        img: 'kedarnath.jpg', basePrice: 7499, duration: '4N / 5D', vibe: 'Spiritual & Physical', group: '12 Max',
+        desc: "A trek that tests your legs and stills your mind. 16km through pine forests, glacial streams, and alpine meadows to one of India's holiest shrines at 3583m. Spiritual but not stuffy — come curious.",
+        host: { name: 'Priya Singh', initials: 'PS', bio: "Ultramarathon runner and certified mountain guide. Has summited Kedarnath in all four seasons. Your safety is her obsession.", trips: 41 },
+        itinerary: [
+          { day: 'Day 1', title: 'Drive to Gaurikund', sub: 'The Trek Base Camp', details: 'Arrive Dehradun or Haridwar. Drive up to Gaurikund (5h via Rudraprayag). Acclimate at 1982m. Evening puja at the hot springs.' },
+          { day: 'Day 2', title: 'Trek Day 1: Gaurikund → Jungle Chatti', sub: '7km | Easy-Moderate', details: 'First 7km through rhododendron forests. Birdsong, waterfalls, and prayer flags. Overnight at a tea house.' },
+          { day: 'Day 3', title: 'Trek Day 2: Summit Kedarnath', sub: '9km | Moderate-Hard', details: 'The final push. Mandakini river by your side. Reach Kedarnath at 3583m. Evening aarti at the temple — goosebumps guaranteed. Overnight at the summit.' },
+          { day: 'Day 4', title: 'Return Trek', sub: 'Back to Gaurikund', details: 'Sunrise ritual. Trek back down (easier on the knees going down). Celebrate with hot chai and Maggi at every stop.' },
+          { day: 'Day 5', title: 'Return to Civilization', sub: 'Depart from Haridwar', details: 'Drive to Haridwar or Rishikesh. Evening Ganga aarti at Har Ki Pauri. Depart feeling lighter than when you arrived.' }
+        ]
+      }
+    ],
+    bookings: JSON.parse(localStorage.getItem('tt_bookings') || '[]'),
+    savedTrips: JSON.parse(localStorage.getItem('tt_saved') || '[1]'),
+  };
+
+  /* ============================================================
+     APP STATE
+  ============================================================ */
+  let currentTab = 'explore';
+  let currentTripId = 0;
+  let bookingStep = 1;
+  let selectedBatch = 0;
+  let selectedBatchPrice = 12499;
+  let addonPrices = [0, 0, 0, 0];
+  let addonToggles = [false, false, false, false];
+  let selectedPayment = 'gpay';
+  let isSaved = false;
+
+  /* ============================================================
+     LOADING
+  ============================================================ */
+  window.addEventListener('load', () => {
+    setTimeout(() => {
+      const ls = document.getElementById('loading-screen');
+      ls.style.opacity = '0';
+      ls.style.pointerEvents = 'none';
+      setTimeout(() => ls.remove(), 500);
+    }, 1800);
+    initCarousel();
+    animateTravelerCount();
+  });
+
+  /* ============================================================
+     TAB NAVIGATION
+  ============================================================ */
+  function switchTab(tab) {
+    if (tab === currentTab && currentTab !== 'detail') return;
+    
+    // If on detail screen, go back to previous tab
+    const detailScreen = document.getElementById('detail-screen');
+    const bookingFooter = document.getElementById('bookingFooter');
+
+    // Close detail if open
+    if (detailScreen.classList.contains('active')) {
+      detailScreen.classList.remove('active');
+      bookingFooter.classList.remove('visible');
+    }
+
+    // Deactivate old tab
+    document.querySelector('.tab-item.active')?.classList.remove('active');
+    document.querySelector('.screen.active')?.classList.remove('active');
+
+    // Activate new tab
+    const tabBtn = document.getElementById(`tab-${tab}`);
+    tabBtn?.classList.add('active');
+
+    const screen = document.getElementById(`${tab}-screen`);
+    screen.classList.add('active');
+
+    currentTab = tab;
+  }
+
+  /* ============================================================
+     DETAIL SCREEN
+  ============================================================ */
+  function openDetail(tripId) {
+    const trip = DB.trips[tripId];
+    currentTripId = tripId;
+
+    // Update content
+    document.getElementById('detail-hero-img').src = trip.img;
+    document.getElementById('detail-hero-img').alt = trip.title;
+    document.getElementById('detail-region-tag').textContent = trip.region;
+    document.getElementById('detail-title').textContent = trip.title;
+    document.getElementById('detail-duration').textContent = trip.duration;
+    document.getElementById('detail-vibe').textContent = trip.vibe;
+    document.getElementById('detail-group').textContent = trip.group;
+    document.getElementById('detail-desc').textContent = trip.desc;
+    document.getElementById('host-name').textContent = trip.host.name;
+    document.getElementById('host-bio').textContent = trip.host.bio;
+    document.getElementById('footer-price').innerHTML = `₹${trip.basePrice.toLocaleString('en-IN')} <span>/person</span>`;
+
+    // Check saved status
+    isSaved = DB.savedTrips.includes(tripId);
+    const saveBtn = document.getElementById('saveBtn');
+    saveBtn.classList.toggle('saved', isSaved);
+
+    // Build itinerary
+    buildItinerary(trip.itinerary);
+
+    // Update booking sheet subtitle
+    document.getElementById('sheet-subtitle').textContent = trip.title;
+
+    // Show detail screen
+    document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.screen').forEach(s => { s.classList.remove('active'); s.classList.remove('exit-left'); });
+    
+    const detail = document.getElementById('detail-screen');
+    detail.classList.add('active');
+    detail.scrollTop = 0;
+    document.getElementById('bookingFooter').classList.add('visible');
+
+    // Reset booking state for this trip
+    selectedBatchPrice = trip.basePrice;
+    selectedBatch = 0;
+  }
+
+  function closeDetail() {
+    const detail = document.getElementById('detail-screen');
+    detail.classList.remove('active');
+    document.getElementById('bookingFooter').classList.remove('visible');
+
+    // Restore previous tab
+    document.getElementById(`tab-${currentTab}`)?.classList.add('active');
+    document.getElementById(`${currentTab}-screen`)?.classList.add('active');
+  }
+
+  function buildItinerary(days) {
+    const container = document.getElementById('itinerary-list');
+    container.innerHTML = days.map((d, i) => `
+      <div class="itinerary-item" id="itin-${i}" onclick="toggleItinerary(${i})">
+        <div class="itinerary-left">
+          <div class="itinerary-dot">${i + 1}</div>
+          <div class="itinerary-line"></div>
+        </div>
+        <div class="itinerary-right">
+          <div class="itinerary-day-header">
+            <div>
+              <div class="itinerary-day-title">${d.day} — ${d.title}</div>
+              <div class="itinerary-day-subtitle">${d.sub}</div>
+            </div>
+            <svg class="itinerary-chevron" width="18" height="18" fill="none" stroke="var(--text-muted)" stroke-width="2" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+          </div>
+          <div class="itinerary-details">${d.details}</div>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  function toggleItinerary(i) {
+    document.querySelectorAll('.itinerary-item').forEach((el, j) => {
+      if (j !== i) el.classList.remove('expanded');
+    });
+    document.getElementById(`itin-${i}`)?.classList.toggle('expanded');
+  }
+
+  function toggleSave() {
+    isSaved = !isSaved;
+    const saveBtn = document.getElementById('saveBtn');
+    saveBtn.classList.toggle('saved', isSaved);
+
+    if (isSaved) {
+      if (!DB.savedTrips.includes(currentTripId)) DB.savedTrips.push(currentTripId);
+    } else {
+      DB.savedTrips = DB.savedTrips.filter(id => id !== currentTripId);
+    }
+    localStorage.setItem('tt_saved', JSON.stringify(DB.savedTrips));
+  }
+
+  /* ============================================================
+     BOOKING MODAL
+  ============================================================ */
+  function openBookingModal() {
+    const trip = DB.trips[currentTripId];
+    bookingStep = 1;
+    selectedBatchPrice = trip.basePrice;
+    addonToggles = [false, false, false, false];
+    addonPrices = [2500, 1800, 800, 1200];
+    
+    // Reset batch selections
+    document.querySelectorAll('.batch-item').forEach((el, i) => el.classList.toggle('selected', i === 0));
+    document.querySelectorAll('.addon-item').forEach(el => el.classList.remove('selected'));
+    document.querySelectorAll('.toggle').forEach(el => el.classList.remove('on'));
+
+    updateStepUI();
+    updateDynamicPrice();
+
+    document.getElementById('bookingOverlay').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeBookingModal(e) {
+    if (e && e.target !== document.getElementById('bookingOverlay')) return;
+    document.getElementById('bookingOverlay').classList.remove('open');
+  }
+
+  function updateStepUI() {
+    const steps = [1, 2, 3, 'success'];
+    steps.forEach((s) => {
+      const el = document.getElementById(`step-${s}-content`);
+      if (el) el.classList.toggle('hidden', s !== bookingStep && !(s === 'success' && bookingStep === 4));
+    });
+
+    // Step dots
+    for (let i = 1; i <= 3; i++) {
+      const dot = document.getElementById(`step-dot-${i}`);
+      if (i < bookingStep) { dot.className = 'step-dot done'; dot.textContent = '✓'; }
+      else if (i === bookingStep) { dot.className = 'step-dot active'; dot.textContent = i; }
+      else { dot.className = 'step-dot upcoming'; dot.textContent = i; }
+    }
+    for (let i = 1; i <= 2; i++) {
+      document.getElementById(`step-line-${i}`)?.classList.toggle('done', i < bookingStep);
+    }
+
+    // Nav buttons
+    const backBtn = document.getElementById('sheet-back-btn');
+    const nextBtn = document.getElementById('sheet-next-btn');
+    const nav = document.getElementById('sheet-nav');
+
+    if (bookingStep === 4) {
+      nav.style.display = 'none';
+      return;
+    }
+    nav.style.display = 'flex';
+    backBtn.style.display = bookingStep > 1 ? 'inline-flex' : 'none';
+
+    const labels = ['', 'Choose Add-ons →', 'Review & Pay →', 'Confirm & Pay 🔥'];
+    nextBtn.textContent = labels[bookingStep];
+    nextBtn.style.flex = bookingStep > 1 ? '1' : '1';
+  }
+
+  function sheetNext() {
+    if (bookingStep < 3) {
+      bookingStep++;
+      if (bookingStep === 3) updatePaymentSummary();
+      updateStepUI();
+    } else {
+      // Simulate payment
+      const btn = document.getElementById('sheet-next-btn');
+      btn.textContent = 'Processing...';
+      btn.disabled = true;
+      setTimeout(() => {
+        bookingStep = 4;
+        updateStepUI();
+        // Add to bookings and update profile
+        DB.bookings.push({ tripId: currentTripId, batchId: selectedBatch, total: calcTotal() });
+        localStorage.setItem('tt_bookings', JSON.stringify(DB.bookings));
+        btn.disabled = false;
+        // Update profile trip count
+        const profTrips = document.getElementById('prof-trips');
+        profTrips.textContent = parseInt(profTrips.textContent) + 1;
+      }, 1800);
+    }
+  }
+
+  function sheetBack() {
+    if (bookingStep > 1) { bookingStep--; updateStepUI(); }
+  }
+
+  function selectBatch(i, price) {
+    selectedBatch = i;
+    selectedBatchPrice = price;
+    document.querySelectorAll('.batch-item').forEach((el, j) => el.classList.toggle('selected', j === i));
+    updateDynamicPrice();
+  }
+
+  function toggleAddon(i, price) {
+    addonToggles[i] = !addonToggles[i];
+    document.getElementById(`addon-${i}`).classList.toggle('selected', addonToggles[i]);
+    document.getElementById(`toggle-${i}`).classList.toggle('on', addonToggles[i]);
+    updateDynamicPrice();
+  }
+
+  function calcTotal() {
+    const addons = addonToggles.reduce((sum, on, i) => sum + (on ? addonPrices[i] : 0), 0);
+    return selectedBatchPrice + addons;
+  }
+
+  function updateDynamicPrice() {
+    const total = calcTotal();
+    const addons = addonToggles.reduce((sum, on, i) => sum + (on ? addonPrices[i] : 0), 0);
+    const el = document.getElementById('dynamic-total');
+    if (el) {
+      el.textContent = `₹${total.toLocaleString('en-IN')}`;
+      document.getElementById('addon-breakdown').textContent = addons > 0
+        ? `Base ₹${selectedBatchPrice.toLocaleString('en-IN')} + Add-ons ₹${addons.toLocaleString('en-IN')}`
+        : `Base: ₹${selectedBatchPrice.toLocaleString('en-IN')}`;
+    }
+  }
+
+  function updatePaymentSummary() {
+    const total = calcTotal();
+    const addons = addonToggles.reduce((sum, on, i) => sum + (on ? addonPrices[i] : 0), 0);
+    document.getElementById('pay-base').textContent = `₹${selectedBatchPrice.toLocaleString('en-IN')}`;
+    document.getElementById('pay-total').textContent = `₹${total.toLocaleString('en-IN')}`;
+    const addonsRow = document.getElementById('pay-addons-row');
+    if (addons > 0) {
+      addonsRow.style.display = 'flex';
+      document.getElementById('pay-addons').textContent = `₹${addons.toLocaleString('en-IN')}`;
+    } else {
+      addonsRow.style.display = 'none';
+    }
+  }
+
+  function selectPayment(method) {
+    selectedPayment = method;
+    document.querySelectorAll('.payment-method').forEach(el => el.classList.remove('selected'));
+    document.getElementById(`pm-${method}`)?.classList.add('selected');
+  }
+
+  /* ============================================================
+     TRIBE TABS
+  ============================================================ */
+  function switchTribeTab(tab) {
+    document.getElementById('tab-chats').classList.toggle('active', tab === 'chats');
+    document.getElementById('tab-moments').classList.toggle('active', tab === 'moments');
+    document.getElementById('tribe-chats').classList.toggle('active', tab === 'chats');
+    document.getElementById('tribe-moments').classList.toggle('active', tab === 'moments');
+  }
+
+  /* ============================================================
+     CHAT WINDOW
+  ============================================================ */
+  function openChatWindow(title, img) {
+    document.getElementById('chat-window-title').textContent = title;
+    document.getElementById('chatWindowOverlay').classList.add('open');
+  }
+  function closeChatWindow() {
+    document.getElementById('chatWindowOverlay').classList.remove('open');
+  }
+  function sendChatMessage() {
+    const input = document.getElementById('chatInput');
+    const text = input.value.trim();
+    if (!text) return;
+    const msgs = document.getElementById('chatMessages');
+    const row = document.createElement('div');
+    row.className = 'msg-row mine';
+    row.innerHTML = `
+      <div class="msg-av" style="background:#1B3A42;color:white;">A</div>
+      <div class="msg-bubble">${text}</div>
+    `;
+    msgs.appendChild(row);
+    msgs.scrollTop = msgs.scrollHeight;
+    input.value = '';
+  }
+  document.getElementById('chatInput')?.addEventListener('keydown', e => { if (e.key === 'Enter') sendChatMessage(); });
+
+  /* ============================================================
+     PROFILE TABS
+  ============================================================ */
+  function switchProfileTab(tab) {
+    ['trips', 'saved', 'settings'].forEach(t => {
+      document.getElementById(`ptab-${t}`)?.classList.toggle('active', t === tab);
+      document.getElementById(`ptab-${t}-content`)?.classList.toggle('active', t === tab);
+    });
+  }
+
+  /* ============================================================
+     CATEGORY FILTER
+  ============================================================ */
+  function filterCategory(btn, cat) {
+    document.querySelectorAll('.category-scroll .chip').forEach(c => {
+      c.className = 'chip chip-default';
+    });
+    btn.className = 'chip chip-active';
+    document.querySelectorAll('.trip-card').forEach(card => {
+      if (cat === 'all') { card.style.display = ''; return; }
+      const cats = card.dataset.cats || '';
+      card.style.display = cats.includes(cat) ? '' : 'none';
+    });
+  }
+
+  /* ============================================================
+     HERO CAROUSEL
+  ============================================================ */
+  function initCarousel() {
+    const carousel = document.getElementById('heroCarousel');
+    let isDragging = false, startX = 0, scrollStart = 0;
+    let activeCard = 0;
+
+    carousel.addEventListener('mousedown', e => {
+      isDragging = true;
+      startX = e.pageX;
+      scrollStart = carousel.scrollLeft;
+      carousel.classList.add('grabbing');
+    });
+    carousel.addEventListener('mousemove', e => {
+      if (!isDragging) return;
+      carousel.scrollLeft = scrollStart - (e.pageX - startX);
+    });
+    carousel.addEventListener('mouseup', () => { isDragging = false; carousel.classList.remove('grabbing'); });
+    carousel.addEventListener('mouseleave', () => { isDragging = false; carousel.classList.remove('grabbing'); });
+
+    carousel.addEventListener('scroll', () => {
+      const idx = Math.round(carousel.scrollLeft / carousel.offsetWidth);
+      if (idx !== activeCard) {
+        document.querySelector('.carousel-dot.active')?.classList.remove('active');
+        document.getElementById(`dot-${idx}`)?.classList.add('active');
+        activeCard = idx;
+      }
+    }, { passive: true });
+
+    // Auto-advance
+    setInterval(() => {
+      const total = carousel.querySelectorAll('.hero-card').length;
+      const next = (activeCard + 1) % total;
+      carousel.scrollTo({ left: next * carousel.offsetWidth, behavior: 'smooth' });
+    }, 4500);
+  }
+
+  /* ============================================================
+     LIVE TRAVELER COUNT
+  ============================================================ */
+  function animateTravelerCount() {
+    const el = document.getElementById('travelerCount');
+    let count = 248;
+    setInterval(() => {
+      count += Math.floor(Math.random() * 3) - 1;
+      count = Math.max(240, Math.min(260, count));
+      el.textContent = count + '+';
+    }, 3000);
+  }
+
+  /* ============================================================
+     MOMENT LIKES
+  ============================================================ */
+  function toggleLike(btnId, countId) {
+    const btn = document.getElementById(btnId);
+    const count = document.getElementById(countId);
+    const liked = btn.classList.toggle('liked');
+    const svg = btn.querySelector('svg');
+    svg.setAttribute('fill', liked ? '#e11d48' : 'none');
+    svg.setAttribute('stroke', liked ? '#e11d48' : 'currentColor');
+    count.textContent = parseInt(count.textContent) + (liked ? 1 : -1);
+
+    // Haptic-style animation
+    btn.style.transform = 'scale(1.3)';
+    setTimeout(() => btn.style.transform = '', 200);
+  }
+
+  /* ============================================================
+     RIPPLE EFFECT
+  ============================================================ */
+  document.querySelectorAll('.btn').forEach(btn => {
+    btn.addEventListener('click', function(e) {
+      const ripple = document.createElement('span');
+      ripple.className = 'ripple-effect';
+      const rect = btn.getBoundingClientRect();
+      const size = Math.max(rect.width, rect.height);
+      ripple.style.cssText = `width:${size}px; height:${size}px; left:${e.clientX - rect.left - size/2}px; top:${e.clientY - rect.top - size/2}px`;
+      btn.appendChild(ripple);
+      setTimeout(() => ripple.remove(), 600);
+    });
+  });
+
+  /* ============================================================
+     PARALLAX ON DETAIL SCROLL
+  ============================================================ */
+  document.getElementById('detail-screen').addEventListener('scroll', function() {
+    const img = document.getElementById('detail-hero-img');
+    if (img) img.style.transform = `translateY(${this.scrollTop * 0.3}px)`;
+  }, { passive: true });
+
+  /* ============================================================
+     PREVENT MODAL CONTENT CLOSE ON INNER CLICK
+  ============================================================ */
+  document.getElementById('bookingSheet').addEventListener('click', e => e.stopPropagation());
+</script>
+</body>
+</html>
