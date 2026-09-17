@@ -1,0 +1,175 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 46 60% 97%;
+    --foreground: 200 40% 18%;
+    --card: 0 0% 100%;
+    --card-foreground: 200 40% 18%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 200 40% 18%;
+    --primary: 22 76% 52%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 200 40% 18%;
+    --secondary-foreground: 0 0% 100%;
+    --muted: 40 30% 92%;
+    --muted-foreground: 200 20% 50%;
+    --accent: 22 76% 52%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 40 20% 88%;
+    --input: 40 20% 88%;
+    --ring: 22 76% 52%;
+    --radius: 10px;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    @apply bg-cream text-navy font-body;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-headline text-navy;
+  }
+
+  ::selection {
+    @apply bg-orange/20 text-navy;
+  }
+
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-cream-dark;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-navy/30 rounded-pill;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-orange/60;
+  }
+}
+
+@layer components {
+  /* Skeleton shimmer */
+  .skeleton-shimmer {
+    background: linear-gradient(
+      90deg,
+      theme('colors.cream.dark') 25%,
+      theme('colors.cream.muted') 50%,
+      theme('colors.cream.dark') 75%
+    );
+    background-size: 800px 100%;
+    animation: shimmer 1.4s infinite linear;
+  }
+
+  /* Glass card */
+  .glass {
+    @apply bg-white/10 backdrop-blur-md border border-white/20;
+  }
+
+  .glass-dark {
+    background: rgba(27, 58, 66, 0.72);
+    backdrop-filter: blur(24px) saturate(180%);
+    -webkit-backdrop-filter: blur(24px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  /* Gradient text */
+  .gradient-text {
+    @apply bg-gradient-to-r from-orange to-gold-light bg-clip-text text-transparent;
+  }
+
+  /* Section padding */
+  .section-py {
+    @apply py-16 md:py-24;
+  }
+
+  .container-tight {
+    @apply max-w-5xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+
+  /* Trip card image zoom */
+  .trip-card-img {
+    transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .trip-card:hover .trip-card-img {
+    transform: scale(1.06);
+  }
+
+  /* Floating animation */
+  .float-card {
+    animation: float 3s ease-in-out infinite;
+  }
+
+  /* Horizontal scroll with snap */
+  .scroll-snap-x {
+    @apply flex gap-4 overflow-x-auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  .scroll-snap-x::-webkit-scrollbar {
+    display: none;
+  }
+
+  .scroll-snap-item {
+    scroll-snap-align: start;
+    flex-shrink: 0;
+  }
+
+  /* Bottom safe area for mobile */
+  .pb-safe {
+    padding-bottom: max(1rem, env(safe-area-inset-bottom));
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  .no-tap-highlight {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* Counter animation */
+  @keyframes count-up {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .animate-count {
+    animation: count-up 0.5s ease forwards;
+  }
+
+  /* Scroll reveal base state */
+  .reveal {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
