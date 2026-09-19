@@ -53,7 +53,7 @@ export default function AdminUsersPage() {
   async function fetchUsers() {
     try {
       setLoading(true)
-      const res = await fetch('/api/admin/users')
+      const res = await fetch('/api/admin/users', { cache: 'no-store' })
       const data = await res.json()
       if (data.users) {
         setUsers(data.users)

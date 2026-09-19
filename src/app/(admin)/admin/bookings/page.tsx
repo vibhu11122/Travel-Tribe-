@@ -69,7 +69,7 @@ export default function AdminBookingsPage() {
   async function fetchBookings() {
     try {
       setLoading(true)
-      const res = await fetch('/api/admin/bookings')
+      const res = await fetch('/api/admin/bookings', { cache: 'no-store' })
       const data = await res.json()
       if (data.bookings) {
         setBookings(data.bookings)

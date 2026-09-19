@@ -48,7 +48,7 @@ export default function AdminPartnersPage() {
   async function fetchPartners() {
     try {
       setLoading(true)
-      const res = await fetch('/api/admin/partners')
+      const res = await fetch('/api/admin/partners', { cache: 'no-store' })
       const data = await res.json()
       if (data.partners) setPartners(data.partners)
     } catch (err) {

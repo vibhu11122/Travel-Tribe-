@@ -84,7 +84,7 @@ export default function AdminTripsManager() {
 
   async function loadTrips() {
     try {
-      const res = await fetch('/api/admin/trips')
+      const res = await fetch('/api/admin/trips', { cache: 'no-store' })
       const data = await res.json()
       if (data.trips) setTrips(data.trips)
     } catch (err) {

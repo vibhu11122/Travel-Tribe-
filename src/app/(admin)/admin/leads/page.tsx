@@ -51,7 +51,7 @@ export default function AdminLeadsPage() {
 
   async function loadLeads() {
     try {
-      const res = await fetch(`/api/admin/leads?source=${activeSource}&status=${activeStatus}&q=${encodeURIComponent(search)}`)
+      const res = await fetch(`/api/admin/leads?source=${activeSource}&status=${activeStatus}&q=${encodeURIComponent(search)}`, { cache: 'no-store' })
       const data = await res.json()
       if (data.leads) {
         setLeads(data.leads)

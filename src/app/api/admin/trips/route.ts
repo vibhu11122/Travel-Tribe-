@@ -5,6 +5,9 @@ import { slugify } from '@/lib/utils/format'
 import { isSupabaseConfigured } from '@/lib/supabase/config'
 import type { Trip } from '@/lib/types'
 
+export const dynamic = 'force-dynamic'
+export const revalidate = 0
+
 const tripSchema = z.object({
   title: z.string().min(3, 'Title is required'),
   destination: z.string().min(2, 'Destination is required'),

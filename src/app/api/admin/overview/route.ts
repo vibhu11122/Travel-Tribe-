@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getAdminTrips, getAdminLeads, getAdminBookings, getAdminUsers, getAdminPartners } from '@/lib/data/admin-store'
 
+export const dynamic = 'force-dynamic'
+export const revalidate = 0
+
 export async function GET(req: NextRequest) {
   try {
     const trips = getAdminTrips()
@@ -19,7 +22,6 @@ export async function GET(req: NextRequest) {
     const whatsapp_leads_count = leads.filter(l => l.source === 'whatsapp').length
     const active_partners = partners.filter(p => p.status === 'Active').length
 
-    // Estimated profit margin based on operational cost ratio (~20%)
     const total_profit = Math.round(total_collected * 0.20)
 
     return NextResponse.json({
@@ -45,6 +47,10 @@ export async function GET(req: NextRequest) {
         database: 'connected',
         payment_gateway: 'simulation_ready',
         timestamp: new Date().toISOString(),
+      },
+    }, {
+      headers: {
+        'Cache-Control': 'no-store, max-age=0',
       },
     })
   } catch (err: any) {

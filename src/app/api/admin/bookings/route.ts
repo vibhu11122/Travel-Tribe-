@@ -4,6 +4,9 @@ import { getAdminBookings, setAdminBookings, addAdminBooking } from '@/lib/data/
 import { isSupabaseConfigured } from '@/lib/supabase/config'
 import type { AdminBooking } from '@/lib/types'
 
+export const dynamic = 'force-dynamic'
+export const revalidate = 0
+
 const bookingSchema = z.object({
   trip_id: z.string().min(1, 'Trip ID is required'),
   trip_title: z.string().min(1, 'Trip title is required'),

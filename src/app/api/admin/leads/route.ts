@@ -3,6 +3,9 @@ import { getAdminLeads, setAdminLeads } from '@/lib/data/admin-store'
 import { isSupabaseConfigured } from '@/lib/supabase/config'
 import type { LeadInquiry } from '@/lib/types'
 
+export const dynamic = 'force-dynamic'
+export const revalidate = 0
+
 // ─── GET /api/admin/leads ───────────────────────────────────────────────────
 export async function GET(req: NextRequest) {
   try {

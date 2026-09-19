@@ -27,7 +27,7 @@ export default function AdminAnalyticsPage() {
     async function fetchAnalytics() {
       try {
         setLoading(true)
-        const res = await fetch('/api/admin/analytics')
+        const res = await fetch('/api/admin/analytics', { cache: 'no-store' })
         const json = await res.json()
         setData(json)
       } catch (err) {
